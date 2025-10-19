@@ -1,0 +1,43 @@
+/* static/css/formulario.css */
+
+/* Espaçamento entre campos */
+#formulario p,
+#formulario .form-row,
+#formulario div {
+    margin-bottom: 1.5rem;
+}
+
+/* Estiliza labels */
+#formulario label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #000000;
+}
+
+/* Estiliza inputs */
+#formulario input,
+#formulario select,
+#formulario textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid white;
+    background-color: transparent;
+    color: white;
+    border-radius: 0.375rem;
+}
+
+/* Estiliza textos de ajuda */
+#formulario .helptext,
+#formulario .form-text {
+    font-size: 0.875rem;
+    color: #b31141;
+    margin-top: 0.25rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    #formulario {
+        padding: 1.5rem;
+    }
+}

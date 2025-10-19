@@ -1,0 +1,53 @@
+{% extends 'indexLogin.html' %}
+{% load static %}
+{% load socialaccount %}
+
+{% block content %}
+<section id="login" class="login section py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-5">
+        
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4 p-md-5">
+            <form action="{% url 'login_usuario' %}" method="POST">
+              {% csrf_token %}
+              <h2 class="text-center mb-4">Login</h2>
+
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control" name="username" id="inputUsername" placeholder="Informe seu e-mail" required>
+                <label for="inputUsername">Usuário ou E-mail</label>
+              </div>
+
+              <div class="form-floating mb-3">
+                <input type="password" class="form-control" name="password" id="inputPassword" placeholder="Digite sua senha" required>
+                <label for="inputPassword">Senha</label>
+              </div>
+
+              <div class="mb-4">
+    
+              </div>
+
+              <button class="w-100 btn btn-lg btn-enroll mb-3" type="submit">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Entrar
+              </button>
+
+              <hr class="my-4">
+
+              <div class="text-center">
+                <p class="mb-3">Não tem uma conta?</p>
+                <a href="{% url 'addUsuario' %}" class="btn btn-outline-primary w-100 mb-2">Criar conta</a>
+                <a href="{% provider_login_url 'google' %}" class="btn btn-light w-100 d-flex align-items-center justify-content-center gap-2">
+                  <img src="{% static 'imagens/logoGoogle.png' %}" width="24" height="24" alt="Google">
+                  Entrar com o Google
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

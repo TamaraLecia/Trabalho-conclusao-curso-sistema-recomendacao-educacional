@@ -1,0 +1,49 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-xl navbar-primary fixed-top p-0 m-0 mt-4">
+  <div class="container-fluid">
+
+    <!-- Marca (nome da trilha) -->
+    <a class="navbar-brand ms-3" href="#">
+      <h1 class="sitename mb-0 text-white fs-5 text-wrap">
+        <strong>{{ trilha.nome }}</strong>
+      </h1>
+    </a>
+
+    <!-- Botão toggle (abre offcanvas no mobile) -->
+    <button class="navbar-toggler ms-auto me-2" type="button" data-bs-toggle="offcanvas"
+      data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Offcanvas Sidebar -->
+    <div class="offcanvas offcanvas-end bg-primary text-white" tabindex="-1" id="offcanvasNavbar"
+      aria-labelledby="offcanvasNavbarLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+          aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="navbar-nav ms-auto d-flex align-items-start">
+          <li class="nav-item">
+            <a class="nav-link active text-white" href="{% url 'minhasTrilhas' %}">Voltar</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Linha separada para a pontuação -->
+<div class="bg-primary text-white w-100 text-start ps-3 pt-1 pb-1 fixed-top" style="top: 80px; z-index: 1029;">
+  <span class="sitename pontuacao">
+    Sua pontuação na trilha
+    <i class="bi bi-trophy-fill text-warning"></i>:
+    <strong>{{ pontos_usuario }} xp</strong>
+  </span>
+</div>
+
+<!-- Espaço para não esconder o conteúdo atrás da navbar fixa -->
+<div style="height:110px;"></div>

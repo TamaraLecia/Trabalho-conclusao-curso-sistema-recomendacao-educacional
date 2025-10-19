@@ -1,0 +1,256 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Minhas Trilhas</title>
+  <meta name="description" content="Trilhas de estudo recomendadas">
+  <meta name="keywords" content="trilhas, cursos, aprendizado, programação, banco de dados">
+
+  <!-- Favicons -->
+  <link href="{% static 'img/sisRecomendacao.jpg' %}" rel="icon">
+  <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Raleway:wght@400;600;700&family=Ubuntu:wght@400;500;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Main CSS File (Learner) -->
+  <link href="{% static 'css/main.css' %}" rel="stylesheet">
+</head>
+
+<body class="events-page">
+
+  <!-- Header -->
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+      <a href="#" class="logo d-flex align-items-center me-auto">
+        <h1 class="sitename mb-0 text-white fs-5">Minha Pontuação <i class="bi bi-trophy-fill text-warning fs-4"></i>:
+          <strong>{{ pontos_gerais|default:"0" }} XP</strong> </h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="{% url 'indexUsuarioComun' %}" class="active">Voltar</a></li>
+          <a class="btn-getstarted" href="{% url 'indexUsuarioComun' %}">Início</a>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Page Title -->
+    <div class="page-title light-background">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">Trilhas não finalizadas</h1>
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a href="{% url 'indexUsuarioComun' %}">Início</a></li>
+            <li class="current"><a href="#" data-bs-toggle="modal" data-bs-target="#pontuacaoModal">
+                Como funciona a pontuação
+              </a></li>
+          </ol>
+        </nav>
+      </div>
+
+      <!-- Botão para abrir o modal -->
+      <!-- <div class="text-center mt-3">
+        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#pontuacaoModal">
+          Como funciona a pontuação?
+        </button>
+      </div>
+    </div> -->
+      <!-- /Page Title -->
+
+      <!-- Trilhas Section -->
+      <section id="trilhas" class="courses-events section">
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+          <div class="row">
+
+            <!-- Conteúdo principal -->
+            <div class="col-lg-8">
+
+              {% for trilha in trilhas %}
+              <!-- Trilha Item -->
+              <article class="event-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="row g-0">
+                  <div class="col-md-12">
+                    <div class="event-content">
+                      <h3 class="event-title">
+                        {{ trilha.nome }}
+                      </h3>
+
+                      <p class="event-description">
+                        {{ trilha.descricao }}
+                      </p>
+
+                      <div class="event-actions d-flex gap-2">
+                        <a href="{% url 'verTrilhaCaminho' trilha.id %}" class="btn btn-primary">Acessar trilha</a>
+                        <a href="{% url 'indexUsuarioComun' %}" class="btn btn-outline-secondary">Voltar</a>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <!-- /Trilha Item -->
+              {% empty %}
+              <article class="event-card">
+                <div class="event-content">
+                  <p class="event-description">Você ainda não possui trilhas em andamento.</p>
+                </div>
+              </article>
+              {% endfor %}
+            </div>
+            <!-- /Conteúdo principal -->
+
+          </div>
+        </div>
+      </section>
+      <!-- /Trilhas Section -->
+
+  </main>
+
+  <!-- Footer -->
+  <footer id="footer" class="footer accent-background">
+
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-about">
+          <a href="#" class="logo d-flex align-items-center">
+            <span class="sitename">EstudaTech</span>
+          </a>
+          <p>O EstudaTech é um sistema de recomendação educacional, com o propósito de recomendar trilhas de estudo com vídeos sobre conteúdos de informática, de acordo com as respostas obtidas no questionário.</p>
+          <div class="social-links d-flex mt-4">
+            <a href="#"><i class="bi bi-twitter-x"></i></a>
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <!-- <h4>Links úteis</h4>
+          <ul>
+            <li><a href="{% url 'indexUsuarioComun' %}">Início</a></li>
+            <li><a href="#">Sobre</a></li>
+            <li><a href="#">Serviços</a></li>
+            <li><a href="#">Termos</a></li>
+            <li><a href="#">Privacidade</a></li>
+          </ul> -->
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <!-- <h4>Recursos</h4>
+          <ul>
+            <li><a href="#">Trilhas</a></li>
+            <li><a href="#">Cursos</a></li>
+            <li><a href="#">Tutoriais</a></li>
+            <li><a href="#">Blog</a></li>
+          </ul> -->
+        </div>
+
+        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+          <!-- <h4>Contato</h4>
+          <p>Rua Exemplo, 123</p>
+          <p>Pindaí - BA</p>
+          <p>Brasil</p>
+          <p class="mt-4"><strong>Telefone:</strong> <span>(77) 99999-9999</span></p>
+          <p><strong>Email:</strong> <span>contato@minhastrilhas.com</span></p> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span> <strong class="px-1 sitename"></strong> <span>Trabalho de Conclusão de curso</span></p>
+      <div class="credits">
+          <!-- All the links in the footer should remain intact. -->
+          <!-- You can delete the links only if you've purchased the pro version. -->
+          <!-- Licensing information: https://bootstrapmade.com/license/ -->
+          <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+    <i class="bi bi-arrow-up-short"></i>
+  </a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- =========================
+       MODAL DE PONTUAÇÃO
+       ========================= -->
+  <div class="modal fade" id="pontuacaoModal" tabindex="-1" aria-labelledby="pontuacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+
+        <!-- Cabeçalho -->
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title text-white" id="pontuacaoModalLabel">Pontuação das Trilhas</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+
+        <!-- Corpo -->
+        <div class="modal-body">
+          <p class="mb-3">
+            Sua pontuação geral é calculada a partir da soma dos pontos obtidos em cada trilha concluída.
+          </p>
+
+          <h6 class="fw-bold">Como funciona a pontuação em cada capítulo:</h6>
+          <ul class="mb-3">
+            <li>Assistir <strong>metade do vídeo</strong> → <span class="text-success">5 pontos</span></li>
+            <li>Assistir <strong>quase todo ou todo o vídeo</strong> → <span class="text-success">10 pontos</span></li>
+          </ul>
+
+          <p class="mb-0">
+            <em>Observação:</em> Reassistir o mesmo vídeo não gera pontos adicionais.
+          </p>
+        </div>
+
+        <!-- Rodapé -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- /MODAL DE PONTUAÇÃO -->
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
+  <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+
+  <!-- Main JS File -->
+  <script src="{% static 'js/main.js' %}"></script>
+
+  <script>
+    AOS.init();
+  </script>
+</body>
+
+</html>

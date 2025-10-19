@@ -1,0 +1,73 @@
+{% load static %}
+
+<div class="hero-content">
+  <div class="container">
+    <div class="row align-items-center">
+
+      <!-- Coluna de texto -->
+      <div class="col-12 col-lg-6 mb-4 mb-lg-0" data-aos="fade-up" data-aos-delay="100">
+        <div class="hero-text">
+          <h1>Transforme o seu caminho de aprendizado com trilhas digitais.</h1>
+          <p>
+            Descubra o seu caminho de aprendizado, utilizando o Sistema de recomendação de conteúdos na área da informática, 
+            para obter trilhas de estudos com base nas informações obtidas no questionário.<br>
+            Com este sistema esperamos facilitar o seu aprendizado,<br>
+            por meio de uma sequência lógica e estruturada dos conteúdos.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="{% url 'login' %}"class="btn btn-primary">Começar</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna de imagem -->
+      <div class="col-12 col-lg-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="hero-image text-center text-lg-end">
+          <div class="main-image">
+            <img src="{% static 'img/education/courses-13.webp' %}" alt="Online Learning" class="img-fluid">
+          </div>
+
+          <!-- Cards flutuantes -->
+          <div class="floating-cards mt-4 mt-lg-0">
+            <div class="course-card" data-aos="fade-up" data-aos-delay="300">
+              <div class="card-icon">
+                <i class="bi bi-code-slash"></i>
+              </div>
+              <div class="card-content">
+                <h6>Desenvolvimento Web</h6>
+              </div>
+            </div>
+
+            <div class="course-card" data-aos="fade-up" data-aos-delay="400">
+              <div class="card-icon">
+                <i class="bi bi-phone"></i>
+              </div>
+              <div class="card-content">
+                <h6>Desenvolvimento Mobile</h6>
+              </div>
+            </div>
+
+            <div class="course-card" data-aos="fade-up" data-aos-delay="500">
+              <div class="card-icon">
+                <i class="bi bi-database"></i>
+              </div>
+              <div class="card-content">
+                <h6>Banco de Dados</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="hero-background">
+  <div class="bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+</div>

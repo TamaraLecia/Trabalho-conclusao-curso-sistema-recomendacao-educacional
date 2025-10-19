@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Bootstrap customizado -->
+    <link rel="stylesheet" href="{% static 'bootstrap-5.3.8/css/bootstrap-custom.css' %}">
+
+    <link href="{% static 'img/sisRecomendacao.jpg' %}" rel="icon">
+</head>
+<body>
+    <h3>Dados da trilha</h3>
+    <a href="{% url 'editar_topico' topico.id %}" class="btn btn-sm btn-info mb-2">Gerenciar capítulos</a>
+
+    <!-- Remove the container if you want to extend the Footer to full width. -->
+    <div class="mt-5 pt-5">
+      <!-- Footer -->
+      <footer class="text-center text-white bg-primary">
+        <!-- Grid container -->
+        <div class="container">
+          <!-- Section: Links -->
+          <section class="mt-2">
+            <!-- Grid row-->
+            <div class="row text-center d-flex justify-content-center pt-4 mt-3">
+              <!-- Grid column -->
+              <div class="col-md-2">
+                <h6 class="text-uppercase font-weight-bold ">
+                  <a href="#!" class="text-white">About us</a>
+                </h6>
+              </div>
+              <!-- Grid column -->
+            </div>
+            <!-- Grid row-->
+          </section>
+          <!-- Section: Links -->
+
+          <hr class="my-3" />
+
+          <!-- Section: Text -->
+          <section class="mb-2">
+            <div class="row d-flex justify-content-center">
+              <div class="col-lg-8">
+                <p>
+                  O EstudaTech é um sistema de recomendação educacional, com o propósito de recomendar trilhas de estudo com vídeos sobre conteúdos de informática, de acordo com as respostas obtidas no questionário.
+                </p>
+              </div>
+            </div>
+          </section>
+          <!-- Section: Text -->
+        </div>
+        <!-- Grid container -->
+
+        <!-- Copyright -->
+        <div
+            class="text-center p-2"
+            style="background-color: rgba(0, 0, 0, 0.2)"
+            >
+          © 2025 Copyright: Trabalho de Conclusão de curso
+        </div>
+        <!-- Copyright -->
+      </footer>
+      <!-- Footer -->
+  </div>
+    <!-- End of .container -->
+</body>
+</html>

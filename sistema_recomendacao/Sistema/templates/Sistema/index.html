@@ -1,0 +1,143 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Bootstrap customizado -->
+    <link rel="stylesheet" href="{% static 'bootstrap-5.3.8/css/bootstrap-custom.css' %}">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css1/carousel.css' %}">
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg  bg-primary">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+        <!-- Collapsible wrapper -->
+        <div class="collapse navbar-collapse" id="navbarButtonsExample">
+        <!-- Left links -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+            <a class="nav-link text-white" href="#">Sistema de Recomendação Educacional</a>
+            </li>
+        </ul>
+        <!-- Left links -->
+
+        <div class="d-flex align-items-center">
+            <a href="{% url 'login' %}" class="btn btn-outline-info px-3 me-2 text-white" role="button">Login</a>
+            <!-- <button data-mdb-ripple-init type="button" class="btn btn-link px-3 me-2 text-white" >
+            Login
+            </button> -->
+            <!-- <button data-mdb-ripple-init type="button" class="btn btn-outline-info me-3">
+            Sign up for free
+            </button> -->
+            <!-- <a
+            data-mdb-ripple-init
+            class="btn btn-dark px-3"
+            href="https://github.com/mdbootstrap/mdb-ui-kit"
+            role="button"
+            ><i class="bi bi-github"></i
+            ></a> -->
+        </div>
+        </div>
+        <!-- Collapsible wrapper -->
+    </div>
+    <!-- Container wrapper -->
+    </nav>
+<!-- Navbar -->
+
+    <div id="carouselExampleRide" class="carousel slide pt-5" data-bs-ride="carousel" data-bs-interval="2000">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{% static 'imagens/html-css-js.png' %}" class="d-block w-50 mx-auto img-fluid border border-5 border-primary-subtle" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'imagens/linux.png' %}" class="d-block w-50 mx-auto img-fluid border border-5 border-primary-subtle" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'imagens/mysql.png' %}" class="d-block w-50 mx-auto img-fluid border border-5 border-primary-subtle" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'imagens/SqlServer.png' %}" class="d-block w-50 mx-auto img-fluid border border-5 border-primary-subtle" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'imagens/linguagensProgramação.png' %}" class="d-block w-50 mx-auto img-fluid border border-5 border-primary-subtle" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'imagens/frameworks.png' %}" class="d-block w-50 mx-auto img-fluid border border-5 border-primary-subtle" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'imagens/gitHub.png' %}" class="d-block w-50 mx-auto img-fluid border border-5 border-primary-subtle" alt="...">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleRide" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleRide" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+            <span class="visually-hidden ">Próximo</span>
+        </button>
+  </div>
+  <!-- Remove the container if you want to extend the Footer to full width. -->
+<div class="mt-5 pt-5">
+  <!-- Footer -->
+  <footer class="text-center text-white bg-primary">
+    <!-- Grid container -->
+    <div class="container">
+      <!-- Section: Links -->
+      <section class="mt-2">
+        <!-- Grid row-->
+        <div class="row text-center d-flex justify-content-center pt-4 mt-3">
+          <!-- Grid column -->
+          <div class="col-md-2">
+            <h6 class="text-uppercase font-weight-bold ">
+              <a href="#!" class="text-white">About us</a>
+            </h6>
+          </div>
+          <!-- Grid column -->
+        </div>
+        <!-- Grid row-->
+      </section>
+      <!-- Section: Links -->
+
+      <hr class="my-3" />
+
+      <!-- Section: Text -->
+      <section class="mb-2">
+        <div class="row d-flex justify-content-center ">
+          <div class="col-lg-8">
+            <p class="text-white">
+              Este sistema de recomendação, é um sistema de recomendação educacional, com o propósito
+              de recomendar trilhas de estudo com vídeos sobre conteúdos de informática, de acordo
+              com as respostas obtidas no questionário.
+            </p>
+          </div>
+        </div>
+      </section>
+      <!-- Section: Text -->
+
+    </div>
+    <!-- Grid container -->
+
+    <!-- Copyright -->
+    <div
+         class="text-center p-2"
+         style="background-color: rgba(0, 0, 0, 0.2)"
+         >
+      © 2025 Copyright: Trabalho de Conclusão de curso
+    </div>
+    <!-- Copyright -->
+  </footer>
+  <!-- Footer -->
+</div>
+<!-- End of .container -->
+
+  <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

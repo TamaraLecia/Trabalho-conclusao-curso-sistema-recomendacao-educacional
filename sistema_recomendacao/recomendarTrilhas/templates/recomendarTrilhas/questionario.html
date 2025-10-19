@@ -1,0 +1,122 @@
+{% extends 'indexQuestionario.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css1/estilo.css' %}">
+
+<form method="post" class="container py-4">
+  {% csrf_token %}
+  <input type="hidden" name="inicio" value="{{ inicio|default:1 }}">
+
+  {% if inicio == 1 %}
+  <!-- Pergunta 1 -->
+  <div class="form-section form-bg-suave p-4 rounded shadow-sm">
+    <h3><i class="bi-list-check me-2 text-primary"></i> 1. Deste conteúdos quais você deseja estudar?</h3>
+    <div class="row mt-4">
+      {% for conteudo in conteudos %}
+      <div class="col-12 col-sm-6 col-md-4 mb-3">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="Conteudo" value="{{ conteudo.Conteudo }}">
+          <label class="form-check-label">{{ conteudo.Conteudo }}</label>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-end mt-3">
+      <button class="btn btn-primary rounded" type="submit" onclick="this.form.inicio.value=2">Continuar</button>
+    </div>
+  </div>
+
+  {% elif inicio == 2 %}
+  <!-- Pergunta 2 -->
+  <div class="form-section form-bg-suave p-4 rounded shadow-sm">
+    <h3><i class="bi bi-bar-chart me-2 text-primary"></i> 2. Como você avalia o seu nível de conhecimento nesse(s) conteúdo(s)?</h3>
+    {% for conteudo in conteudos_selecionados %}
+    <div class="mb-4">
+      <label class="form-label">{{ conteudo }}</label>
+      <div class="slider-container position-relative w-100">
+        <div class="d-flex justify-content-between">
+          <small>0%</small>
+          <small>100%</small>
+        </div>
+        <input type="range" class="form-range custom-slider w-100"
+               name="nivel_{{ conteudo }}" min="0" max="100" step="1" value="50"
+               oninput="this.nextElementSibling.innerText = this.value + '%'">
+        <div class="slider-bubble">50%</div>
+      </div>
+    </div>
+    {% endfor %}
+    {% for conteudo in conteudos_selecionados %}
+    <input type="hidden" name="Conteudo" value="{{ conteudo }}">
+    {% endfor %}
+    <div class="text-end mt-3">
+      <button class="btn btn-primary rounded" type="submit" onclick="this.form.inicio.value=3">Continuar</button>
+    </div>
+  </div>
+
+  {% elif inicio == 3 %}
+  <!-- Pergunta 3 -->
+  <div class="form-section form-bg-suave p-4 rounded shadow-sm">
+    <h3><i class="bi bi-pencil-square me-2 text-primary"></i> 3. Qual o seu objetivo ao estudar este(s) conteúdo?</h3>
+    <div class="mb-4">
+      <textarea name="objetivo" class="form-control" rows="6" placeholder="Descreva seu objetivo"></textarea>
+    </div>
+
+    {% for conteudo in conteudos_selecionados %}
+    <input type="hidden" name="Conteudo" value="{{ conteudo }}">
+    {% endfor %}
+    {% for conteudo, nivel in nivel_conhecimento.items %}
+    <input type="hidden" name="nivel_{{ conteudo }}" value="{{ nivel }}">
+    {% endfor %}
+
+    <div class="text-end mt-3">
+      <button id="btn-gerar" class="btn btn-primary rounded" type="submit" onclick="this.form.inicio.value=4">Gerar recomendação</button>
+    </div>
+  </div>
+</form>
+
+{% elif inicio == 4 %}
+<!-- Pergunta 4 -->
+<div class="container py-4">
+  <h3 class="mb-4">Trilhas recomendadas:</h3>
+
+  {% if conteudos_recomendados %}
+  <div class="row">
+    {% for trilha in conteudos_recomendados %}
+    <div class="col-12 col-md-6 col-lg-4 mb-4">
+      <form action="{% url 'questionario' %}" method="post" class="h-100">
+        {% csrf_token %}
+        <input type="hidden" name="inicio" value="4">
+        <input type="hidden" name="trilha_id" value="{{ trilha.id }}">
+        <div class="card h-100 border border-primary">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ trilha.nome }}</h5>
+            <p class="card-text flex-grow-1">{{ trilha.descricao }}</p>
+            <button type="submit" class="btn btn-primary mt-auto">Clique para acessar a trilha</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>Nenhuma trilha encontrada para os critérios informados.</p>
+  {% endif %}
+</div>
+{% endif %}
+
+<!-- Preloader -->
+<div id="preloader" class="d-none position-fixed top-0 start-0 w-100 h-100 
+            bg-white bg-opacity-75 d-flex flex-column justify-content-center align-items-center"
+     style="z-index: 1050;">
+  <div class="d-flex gap-2 mb-3">
+    <div class="dot bg-primary rounded-circle"></div>
+    <div class="dot bg-primary rounded-circle"></div>
+    <div class="dot bg-primary rounded-circle"></div>
+  </div>
+  <h5 class="text-primary">Gerando sua trilha personalizada...</h5>
+  <p class="text-muted">Isso pode levar alguns segundos</p>
+</div>
+
+<script src="{% static 'JavaScript/script.js' %}"></script>
+{% endblock %}

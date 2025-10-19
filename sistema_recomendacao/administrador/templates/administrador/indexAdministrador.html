@@ -1,0 +1,42 @@
+{% extends 'indexAdm.html' %}
+{% load static %}
+    
+  {% block content %}
+   <div class="container mt-5">
+    <h3 class="mb-4 text-center text-primary">📋 Painel Administrativo</h3>
+
+        <div class="container">
+            <div class="row g-3"> <!-- g-3 adiciona espaçamento entre colunas -->
+
+                <div class="col-md-6">
+                <a href="/recomendarTrilhas/addTrilha" class="btn btn-outline-info text-dark w-100">
+                    Adicionar trilha
+                </a>
+                </div>
+
+                <div class="col-md-6">
+                <a href="/recomendarTrilhas/verTrilhas" class="btn btn-outline-primary w-100">
+                    Ver trilhas cadastradas
+                </a>
+                </div>
+
+                <div class="col-md-6">
+                <a href="{% url 'verAdministradores' %}" class="btn btn-outline-primary w-100">
+                    Ver administradores cadastrados
+                </a>
+                </div>
+
+                <div class="col-md-6">
+                <a href="{% url 'add' %}" class="btn btn-outline-info text-dark w-100">
+                    Adicionar administrador
+                </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 20vh;"></div>
+    <!-- End of .container -->
+
+ <!-- Bootstrap JS -->
+ {% endblock %}

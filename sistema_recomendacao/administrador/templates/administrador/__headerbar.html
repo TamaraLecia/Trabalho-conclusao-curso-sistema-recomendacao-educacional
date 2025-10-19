@@ -1,0 +1,40 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-xl navbar-primary fixed-top p-0 m-0 mt-4">
+  <div class="container-fluid">
+
+    <!-- Logo à esquerda -->
+    <a class="navbar-brand ms-3" href="index.html">
+      <h1 class="sitename mb-0 text-white">EstudaTech</h1>
+    </a>
+
+    <!-- Botão toggle (abre offcanvas no mobile) -->
+    <button class="navbar-toggler me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+      aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Offcanvas Sidebar -->
+    <div class="offcanvas offcanvas-end bg-primary text-white" tabindex="-1" id="offcanvasNavbar"
+      aria-labelledby="offcanvasNavbarLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="navbar-nav ms-auto d-flex align-items-start">
+          <li class="nav-item">
+            <a class="nav-link active text-white" href="{% url 'verPerfilAdmin' request.user.username  %}">Ver perfil</a>
+          </li>
+           <li class="nav-item">
+            <a class="nav-link active text-white" href="{% url 'realizarlogout' %}">sair</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Espaço para não esconder o conteúdo atrás da navbar fixa -->
+<div style="height:70px;"></div>

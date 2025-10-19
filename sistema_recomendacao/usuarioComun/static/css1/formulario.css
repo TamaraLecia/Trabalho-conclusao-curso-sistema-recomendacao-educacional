@@ -1,0 +1,7 @@
+/* Estilo para todos os help_text do Django */
+.helptext {
+  display: block;          /* quebra de linha */
+  margin-top: 0.25rem;     /* espaço entre o input e o texto */
+  font-size: 0.875em;      /* mesmo tamanho do Bootstrap .form-text */
+  color: #000000;        /* cinza Bootstrap (text-muted) */
+}

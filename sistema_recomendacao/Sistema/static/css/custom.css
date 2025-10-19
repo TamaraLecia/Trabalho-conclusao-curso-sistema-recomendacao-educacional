@@ -1,0 +1,43 @@
+/* HEADER */
+body.courses-page header.header {
+  position: relative !important;
+  padding: 10px 15px !important;
+  text-align: center !important;
+}
+body.courses-page header.header .navmenu ul {
+  flex-direction: column !important;
+  align-items: center !important;
+}
+@media (min-width: 992px) {
+  body.courses-page header.header {
+    position: sticky !important;
+    top: 0 !important;
+    text-align: left !important;
+  }
+  body.courses-page header.header .navmenu ul {
+    flex-direction: row !important;
+  }
+}
+
+/* FOOTER */
+body.courses-page footer.footer {
+  padding: 20px 10px !important;
+  text-align: center !important;
+}
+body.courses-page footer.footer .footer-top .col-lg-5,
+body.courses-page footer.footer .footer-top .col-lg-2,
+body.courses-page footer.footer .footer-top .col-lg-3 {
+  flex: 0 0 100% !important;
+  max-width: 100% !important;
+  margin-bottom: 1.5rem !important;
+  text-align: center !important;
+}
+@media (min-width: 768px) {
+  body.courses-page footer.footer .footer-top .col-lg-5,
+  body.courses-page footer.footer .footer-top .col-lg-2,
+  body.courses-page footer.footer .footer-top .col-lg-3 {
+    flex: initial !important;
+    max-width: initial !important;
+    text-align: left !important;
+  }
+}

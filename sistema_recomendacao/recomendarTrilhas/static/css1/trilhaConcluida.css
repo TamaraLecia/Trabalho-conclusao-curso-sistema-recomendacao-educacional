@@ -1,0 +1,39 @@
+/* Espaçamento geral */
+.container {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Card principal */
+.card {
+  border-radius: 0.6rem;
+}
+
+/* Cards de trilha */
+.card-trilha {
+  border: 2px solid #0dcaf0; /* azul claro */
+  border-radius: 0.6rem;
+  padding: 0.75rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Efeito hover */
+.card-trilha:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+/* Espaçamento entre cards */
+.row.g-4 {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Ajuste de largura em telas grandes */
+@media (min-width: 992px) {
+  .card-trilha {
+    max-width: 95%; /* ocupa quase toda a coluna */
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

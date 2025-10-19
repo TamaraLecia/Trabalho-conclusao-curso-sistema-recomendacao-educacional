@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Perfil de Usuário - EstudaTech</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Raleway:wght@400;600;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link href="{% static 'img/sisRecomendacao.jpg' %}" rel="icon">
+  
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="{% static 'css/main.css' %}" rel="stylesheet">
+  <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+</head>
+
+<body class="enroll-page">
+
+  <!-- Header -->
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+      <a href="{% url 'indexAdm' %}" class="logo d-flex align-items-center me-auto">
+        <h1 class="sitename">EstudaTech</h1>
+      </a>
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="{% url 'indexUsuarioComun' %}" style="color: white;">Início</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Page Title -->
+    <div class="page-title light-background">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">Perfil de Usuário</h1>
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a href="{% url 'indexUsuarioComun' %}">Voltar</a></li>
+            <li class="current">Perfil</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Perfil Section -->
+    <section id="enroll" class="enroll section">
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <div class="enrollment-form-wrapper">
+
+              <div class="enrollment-header text-center mb-5" data-aos="fade-up" data-aos-delay="200">
+                <h2>👤 Dados do Perfil</h2>
+                <p>Visualize ou edite suas informações de usuário.</p>
+              </div>
+
+              <div class="card shadow-sm p-4">
+                <p><strong>Nome de usuário:</strong> {{ userUsuario.username }}</p>
+                <p><strong>Email:</strong> {{ userUsuario.email }}</p>
+                <p><strong>Nome:</strong> {{ usuarioComun.nome }}</p>
+
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                  <a href="{% url 'editarUsuarioComun' usuarioComun.user.username %}" class="btn btn-outline-primary">
+                    <i class="bi bi-pencil-square me-1"></i> Editar Perfil
+                  </a>
+                  <a href="{% url 'editarSenhaUsuario' usuarioComun.user.username %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-file-lock2-fill me-1"></i> Alterar Senha
+                  </a>
+                  <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusao">
+                    <i class="bi bi-trash3-fill me-1"></i> Excluir Conta
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal de Exclusão -->
+    <div class="modal fade" id="confirmarExclusao" tabindex="-1" aria-labelledby="confirmarExclusaoLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-danger">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="confirmarExclusaoLabel">Confirmar exclusão</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            Tem certeza que deseja excluir a sua conta? <br>
+            <strong>Essa ação não pode ser desfeita!</strong>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <form action="{% url 'excluirContaUsuario' %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">Sim, eu quero excluir</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer id="footer" class="footer accent-background">
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-about">
+          <a href="{% url 'indexUsuarioComun' %}" class="logo d-flex align-items-center">
+            <span class="sitename">EstudaTech</span>
+          </a>
+          <p>O EstudaTech é um sistema de recomendação educacional, com o propósito de recomendar trilhas de estudo com vídeos sobre conteúdos de informática, de acordo com as respostas obtidas no questionário.</p>
+          <div class="social-links d-flex mt-4">
+            <a href="#"><i class="bi bi-twitter-x"></i></a>
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span> <strong class="px-1 sitename"></strong> <span>Trabalho de Conclusão de curso</span></p>
+      <div class="credits">
+          <!-- All the links in the footer should remain intact. -->
+          <!-- You can delete the links only if you've purchased the pro version. -->
+          <!-- Licensing information: https://bootstrapmade.com/license/ -->
+          <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+    <i class="bi bi-arrow-up-short"></i>
+  </a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Scripts -->
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

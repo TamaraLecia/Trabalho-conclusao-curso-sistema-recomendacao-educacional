@@ -1,0 +1,94 @@
+{% extends 'indexRecomendarCapitulo.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css1/capitulo.css' %}">
+
+<div class="container capitulo-container">
+
+  {% if bloqueado %}
+    <div class="alert alert-warning text-center mt-3">
+      🚫 Você precisa concluir todos os capítulos do tópico anterior antes de acessar este.
+    </div>
+    <div class="text-center mt-4">
+      <a href="{% url 'verTrilhaCaminho' capitulo.topico.trilha.id %}" class="btn btn-primary">
+        Voltar para a trilha
+      </a>
+    </div>
+  {% else %}
+
+    <!-- vídeo responsivo -->
+    <div class="video-wrapper mb-4">
+      <div class="ratio ratio-16x9">
+        <iframe id="player"
+                src="https://www.youtube.com/embed/{{ capitulo.youtube_embed_url|slice:'-11:' }}?enablejsapi=1"
+                title="YouTube video"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- descrição -->
+    <p class="lead text-justify">{{ capitulo.descricao }}</p>
+
+    <!-- botões -->
+    <div class="mt-4 d-flex flex-wrap gap-2 justify-content-center">
+      <button id="btnConcluir" class="btn btn-success" disabled>
+        ✔ Marcar como concluído
+      </button>
+      <a href="{% url 'verTrilhaCaminho' capitulo.topico.trilha.id %}" class="btn btn-secondary">
+        Voltar para a trilha
+      </a>
+    </div>
+
+    <!-- API do YouTube -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+      let player;
+      const botao = document.getElementById("btnConcluir");
+      let metadeAtingida = false;
+
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          events: { 'onStateChange': onPlayerStateChange }
+        });
+      }
+
+      function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING) {
+          setInterval(() => {
+            const duracao = player.getDuration();
+            const tempoAtual = player.getCurrentTime();
+
+            if (!metadeAtingida && tempoAtual >= duracao / 2) {
+              metadeAtingida = true;
+              botao.disabled = false;
+            }
+          }, 1000);
+        }
+      }
+
+      botao.addEventListener("click", function() {
+        const duracao = player.getDuration();
+        const tempoAtual = player.getCurrentTime();
+        fetch("{% url 'concluir_capitulo' capitulo.id %}", {
+          method: "POST",
+          headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json"},
+          body: JSON.stringify({
+            tempo_assistido: tempoAtual,
+            duracao: duracao
+          })
+        }).then(response => response.json())
+          .then(data => {
+            if (data.redirect_url) {
+              window.location.href = data.redirect_url;
+            }
+          });
+      });
+    </script>
+  {% endif %}
+
+</div>
+{% endblock %}
