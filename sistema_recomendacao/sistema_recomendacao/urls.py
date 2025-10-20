@@ -20,8 +20,8 @@ from Sistema import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+     path('', include('Sistema.urls')), # rota do app de Sistema
     path('recomendarTrilhas/', include('recomendarTrilhas.urls')),
-    path('Sistema/', include('Sistema.urls')),
     path('administrador/', include('administrador.urls')),
     path('usuarioComun/', include('usuarioComun.urls')),
 
