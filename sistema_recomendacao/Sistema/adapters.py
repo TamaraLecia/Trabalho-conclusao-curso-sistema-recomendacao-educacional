@@ -1,6 +1,7 @@
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission
 
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
     def pre_social_login(self, request, sociallogin):
@@ -28,6 +29,12 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
             # gerar senha aleátoria para o usuário que fizer login com o google
             user.set_password(User.objects.create_user(username='temp').make_random_password())
             user.save()
+        # Atribuir permissão automaticamente
+        try:
+            permission = Permission.objects.get(codename='acessar_trilha')
+            user.user_permissions.add(permission)
+        except Permission.DoesNotExist:
+            pass
 
         if not hasattr(user, 'administrador'):
             from Sistema.signals import criar_usario_comun

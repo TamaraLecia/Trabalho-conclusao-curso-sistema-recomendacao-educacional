@@ -7,10 +7,9 @@ from .recomendador import recomendar_trilha, recomendar_proxima_trilha
 from django.conf import settings
 from django.forms import inlineformset_factory
 from django.http import JsonResponse, HttpResponseForbidden
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse
 from django.db.models import Sum
-from django.contrib.auth.decorators import permission_required
 
 
 from .forms import TrilhaForm, TopicoFormSet, CapituloFormSet, TopicoForm, CapituloForm
