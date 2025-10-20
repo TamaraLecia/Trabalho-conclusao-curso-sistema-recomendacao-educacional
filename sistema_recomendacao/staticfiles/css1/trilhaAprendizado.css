@@ -1,0 +1,247 @@
+:root {
+  --brand: #1f9afe;        /* cor principal */
+  --card-width: 45%;       /* largura dos cards em telas grandes */
+  --arrow-size: 12px;      /* (mantido só como variável, setas removidas) */
+  --connector-thickness: 3px;
+  --node-size: 20px;       /* diâmetro da bolinha */
+}
+
+body {
+  background: #f8ffff !important; 
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Container da timeline */
+.duo-timeline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rem;
+  position: relative;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 1rem 0;
+  overflow: visible;
+}
+
+/* Linha central (sempre presente) */
+.duo-timeline::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  width: 6px;
+  background: var(--brand);
+  transform: translateX(-50%);
+  border-radius: 3px;
+  z-index: 1;
+}
+
+/* Cada step */
+.duo-step {
+  width: 100%;
+  display: flex;
+  position: relative;
+  min-height: 180px;
+  overflow: visible;
+}
+.duo-step.left  { justify-content: flex-start; }
+.duo-step.right { justify-content: flex-end; }
+
+/* Card */
+.custom-card {
+  width: var(--card-width);
+  min-height: 240px;
+  padding: 1rem;
+  background: transparent; /* recebe cor do status */
+  border: 1px solid var(--brand);
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  z-index: 3; /* acima da linha */
+}
+.custom-card:hover {
+  box-shadow: 0 0 20px rgba(0,0,0,0.25);
+  transform: scale(1.03);
+  cursor: pointer;
+}
+
+/* Bolinha central (desktop) */
+.duo-step::before {
+  content: "";
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  width: var(--node-size); height: var(--node-size);
+  border-radius: 50%;
+  background: var(--brand); border: 3px solid #fff;
+  z-index: 4;
+}
+.duo-step.left::before  { right: calc(50% - (var(--node-size) / 2)); }
+.duo-step.right::before { left:  calc(50% - (var(--node-size) / 2)); }
+
+/* Linhas que ligam até a borda do card (desktop) */
+.duo-step.left::after,
+.duo-step.right::after {
+  content: "";
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  height: var(--connector-thickness);
+  background: var(--brand);
+  z-index: 2; /* abaixo do card */
+}
+.duo-step.left::after {
+  right: 50%;
+  width: calc(90% - var(--card-width) - var(--arrow-size));
+}
+.duo-step.right::after {
+  left: 50%;
+  width: calc(90% - var(--card-width) - var(--arrow-size));
+}
+
+/* capítulos mais espaçosos */
+.list-group-item {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+/* badge do nível embaixo do nome */
+.nivel-badge {
+  display: inline-block;
+  margin-top: 0.4rem;
+}
+
+/* Botões do mesmo tamanho */
+.btn-fixed {
+  min-width: 120px;
+  text-align: center;
+}
+
+/* =========================
+   RESPONSIVIDADE
+   ========================= */
+
+/* Tablets e celulares (timeline centrada, sem bolinha, linha central visível) */
+@media (max-width: 767.98px) {
+  :root {
+    --card-width: 95%;
+  }
+
+  /* Some só a bolinha */
+  .duo-step::before {
+    display: none !important;
+  }
+
+  /* Linha central ajustada: não passa do primeiro e último card */
+  .duo-timeline::before {
+    display: block !important;
+    width: 4px;
+    opacity: 0.9;
+    top: calc(var(--node-size) / 2);     /* começa no meio do primeiro card */
+    bottom: calc(var(--node-size) / 2);  /* termina no meio do último card */
+  }
+
+  /* Mantém a linha central visível e mais fina para mobile */
+  .duo-timeline::before {
+    width: 4px;
+    opacity: 0.9;
+    display: block !important;
+  }
+
+  /* Remove as linhas laterais até o card (para visual clean no mobile) */
+  .duo-step::after {
+    display: none !important;
+  }
+
+  /* Centraliza cards e reduz espaçamento vertical */
+  .duo-step {
+    justify-content: center !important;
+    min-height: auto;
+  }
+
+  /* Ajusta gaps entre cards no mobile */
+  .duo-timeline {
+    gap: 2.5rem;
+    padding: 0.5rem 0;
+  }
+}
+
+/* Ajuste do header em telas muito pequenas */
+@media (max-width: 576px) {
+  .card-header {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: auto;
+    padding: 1rem;
+  }
+}
+
+/* =========================
+   CORES POR STATUS (suaves)
+   ========================= */
+
+.card-topico {
+  border-radius: 8px;
+  padding: 15px;
+  color: #fff;
+}
+
+/* concluído */
+.card-topico.card-concluido {
+  background-color: #90ee90  !important; /* verde suave */
+  color: #1b5e20; /* texto verde escuro */
+}
+
+/* não iniciado */
+.card-topico.card-nao-iniciado {
+  background-color: #ffd59e !important; /* laranja suave */
+  color: #7a3e00; /* texto marrom */
+}
+
+/* em andamento */
+.card-topico.card-andamento {
+  background-color: #a3c9f9 !important; /* azul suave */
+  color: #0d3c61; /* texto azul escuro */
+}
+
+/* mantém as linhas entre capítulos */
+.card-topico .list-group-item {
+  background: transparent !important;
+  border: 1px solid rgba(0,0,0,.15); /* linhas sutis */
+  color: inherit;
+}
+
+/* header/body herdam a cor, sem bordas internas */
+.card-topico .card-header,
+.card-topico .card-body {
+  background: transparent !important;
+  border: none;
+  color: inherit;
+}
+
+/* =========================
+   REMOVER SETAS (todas as telas)
+   ========================= */
+.duo-step.left .custom-card::before,
+.duo-step.right .custom-card::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* nav da trilha e da pontuação */
+.sitename {
+  white-space: normal !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+.pontuacao {
+  font-size: 1rem;
+}
+
+@media (max-width: 576px) {
+  .pontuacao {
+    font-size: 0.85rem;
+  }
+}
+

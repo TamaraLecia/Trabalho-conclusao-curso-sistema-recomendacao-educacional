@@ -1,0 +1,4 @@
+/* Esconde o campo DELETE gerado automaticamente pelo formset */
+input[name$="-DELETE"] {
+    display: none !important;
+}

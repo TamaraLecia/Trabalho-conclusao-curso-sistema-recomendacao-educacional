@@ -1,0 +1,52 @@
+/* Quebra de palavras longas em títulos e descrições */
+.event-title,
+.event-description,
+.topico-nome,
+.capitulo-nome {
+  word-wrap: break-word;       /* suporte antigo */
+  overflow-wrap: break-word;   /* suporte moderno */
+  white-space: normal;         /* permite quebra de linha */
+}
+
+/* Ajuste visual dos títulos */
+.event-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: .5rem;
+}
+
+.topico-nome {
+  font-size: 1.1rem;
+}
+
+.capitulo-nome {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Espaçamento entre cards/listas */
+.event-card,
+.card {
+  margin-bottom: 1.5rem;
+}
+
+
+/* Garante que o título e os breadcrumbs quebrem corretamente */
+.page-title .container {
+  flex-wrap: wrap; /* permite quebra em várias linhas */
+}
+
+/* Breadcrumbs responsivos */
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;   /* quebra em várias linhas se necessário */
+  gap: .25rem;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+/* Evita overflow horizontal */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}

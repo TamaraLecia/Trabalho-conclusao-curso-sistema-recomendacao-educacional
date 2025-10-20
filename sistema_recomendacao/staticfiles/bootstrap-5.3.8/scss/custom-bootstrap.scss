@@ -1,0 +1,25 @@
+// custom-bootstrap.scss
+
+// Sobrescreve a cor primária
+$primary: #1A5EDB;
+$white: #FFFFFF;
+$text-dark: #000000;
+
+
+
+// $secondary – Cinza (para elementos secundários)
+
+// $success – Verde (para ações bem-sucedidas)
+
+// $danger – Vermelho (para erros ou alertas)
+
+// $warning – Amarelo (para avisos)
+
+// $info – Ciano (para informações neutras)
+
+// $light – Cinza claro (para fundos suaves)
+
+// $dark – Ci
+
+// Importa o Bootstrap com suas variáveis modificadas
+@import "bootstrap";

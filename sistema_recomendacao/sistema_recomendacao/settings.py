@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 # Importações para ler a chave da api do youtube
 import json
+import os
 # importação nativa do django
 from pathlib import Path
 
@@ -80,6 +81,8 @@ MIDDLEWARE = [
 
      # Add the account middleware:
     'allauth.account.middleware.AccountMiddleware',
+    # adicionado para fazer o deploy no railway
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 # Provider specific settings
@@ -187,6 +190,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
+# adicione para fazer deploy no railway
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Default primary key field type
