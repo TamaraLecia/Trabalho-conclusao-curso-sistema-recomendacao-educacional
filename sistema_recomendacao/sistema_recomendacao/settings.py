@@ -97,6 +97,7 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
         'AUTH_PARAMS': {
             'access_type': 'online',
+            'prompt': 'select_account', #forçar a tela de escolha do google aparecer
         },
         'OAUTH_PKCE_ENABLED': True,
     }
