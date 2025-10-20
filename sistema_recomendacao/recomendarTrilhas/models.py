@@ -12,6 +12,11 @@ class Trilha(models.Model):
     def __str__(self):
         return self.nome
     
+    class Meta:
+        permissions = [
+            ("acessar_trilha", "Pode acessar trilhas recomendadas"),
+        ]
+    
     @property
     def total_capitulos(self):
         return Capitulo.objects.filter(topico__trilha=self).count()

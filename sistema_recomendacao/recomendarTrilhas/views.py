@@ -10,6 +10,7 @@ from django.http import JsonResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.db.models import Sum
+from django.contrib.auth.decorators import permission_required
 
 
 from .forms import TrilhaForm, TopicoFormSet, CapituloFormSet, TopicoForm, CapituloForm
@@ -18,7 +19,7 @@ from usuarioComun.models import UsuarioComun
 
 DATA_PATH = os.path.join(settings.BASE_DIR, 'recomendarTrilhas', 'data', 'tecnologiasPergunta1.csv')
 
-@login_required
+@permission_required('recomendarTrilhas.acessar_trilha', login_url='/accounts/login/')
 def responderQuestionario(request):
     inicio = int(request.POST.get("inicio", 1)) #controla eu qual etapa o formulário está
     conteudos = []
