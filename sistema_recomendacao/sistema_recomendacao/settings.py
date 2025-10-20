@@ -115,7 +115,7 @@ SOCIALACCOUNT_AUTO_SIGNUP = True
 
 
 # redireciona automaticamente para o Google
-# SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 ROOT_URLCONF = 'sistema_recomendacao.urls'
 
