@@ -41,7 +41,8 @@ else:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# utilização no deploy para aceitar requisições todos os domínios
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition

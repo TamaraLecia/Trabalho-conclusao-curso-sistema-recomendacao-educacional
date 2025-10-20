@@ -9,12 +9,14 @@ deep-translator==1.11.4
 Django==5.2.6
 django-allauth==65.12.0
 gensim==4.3.3
+gunicorn==23.0.0
 idna==3.10
 isodate==0.7.2
 joblib==1.5.2
 langdetect==1.0.9
 nltk==3.9.1
 numpy==1.26.4
+packaging==25.0
 pandas==2.3.2
 pycparser==2.23
 PyJWT==2.10.1
