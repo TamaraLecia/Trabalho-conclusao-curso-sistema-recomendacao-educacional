@@ -36,13 +36,13 @@
       <label class="form-label">{{ conteudo }}</label>
       <div class="slider-container position-relative w-100">
         <div class="d-flex justify-content-between">
-          <small>0%</small>
-          <small>100%</small>
+          <small>0</small>
+          <small>100</small>
         </div>
         <input type="range" class="form-range custom-slider w-100"
-               name="nivel_{{ conteudo }}" min="0" max="100" step="1" value="50"
+               name="nivel_{{ conteudo }}" min="0" max="100" step="1" value="0"
                oninput="this.nextElementSibling.innerText = this.value + '%'">
-        <div class="slider-bubble">50%</div>
+        <div class="slider-bubble"></div>
       </div>
     </div>
     {% endfor %}
