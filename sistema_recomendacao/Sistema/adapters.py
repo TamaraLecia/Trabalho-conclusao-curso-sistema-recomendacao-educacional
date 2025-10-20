@@ -1,5 +1,6 @@
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
     def pre_social_login(self, request, sociallogin):
@@ -24,7 +25,8 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         user = super().save_user(request, sociallogin, form)
 
         if not user.has_usable_password():
-            user.set_password(User.objects.make_random_password())
+            # gerar senha aleátoria para o usuário que fizer login com o google
+            user.set_password(User.objects.create_user(username='temp').make_random_password())
             user.save()
 
         if not hasattr(user, 'administrador'):
