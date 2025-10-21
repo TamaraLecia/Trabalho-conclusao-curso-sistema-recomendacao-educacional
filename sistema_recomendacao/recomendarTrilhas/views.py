@@ -18,7 +18,6 @@ from usuarioComun.models import UsuarioComun
 
 DATA_PATH = os.path.join(settings.BASE_DIR, 'recomendarTrilhas', 'data', 'tecnologiasPergunta1.csv')
 
-@permission_required('recomendarTrilhas.acessar_trilha')
 def responderQuestionario(request):
     inicio = int(request.POST.get("inicio", 1)) #controla eu qual etapa o formulário está
     conteudos = []
