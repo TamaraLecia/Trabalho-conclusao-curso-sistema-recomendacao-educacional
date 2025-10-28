@@ -46,7 +46,7 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
             # random_password = User.objects.make_random_password()
             # user.set_password(random_password)
             #user.set_password(User.objects.create_user(username='temp').make_random_password())
-            user.save()
+             user.save()
 
         # Atribui permissão automaticamente
         try:
