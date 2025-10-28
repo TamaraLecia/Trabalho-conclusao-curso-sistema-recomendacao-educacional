@@ -6,9 +6,9 @@ import nltk
 # utilizada na geração do gráficos
 import matplotlib.pyplot as plt
 import seaborn as sns
-from matplotlib.patches import Rectangle
-# utilizado para ajusta o texto no gráfico de dispersão
-from adjustText import adjust_text
+# from matplotlib.patches import Rectangle
+# # utilizado para ajusta o texto no gráfico de dispersão
+# from adjustText import adjust_text
 
 from django.conf import settings
 from recomendarTrilhas.models import Trilha, ProgressoCapitulo, Capitulo
@@ -148,10 +148,10 @@ def recomendar_trilha(conteudos_usuario, nivel_conhecimento=None, objetivo="",
     if not vetores_trilhas:
         return []
     
-    visualizar_matriz_coloridaNormalizada(vetores_trilhas, vetor_usuario)
-    nomes_trilhas = [trilha.nome for trilha in trilhas]
-    visualizar_matriz_colorida(vetores_trilhas, [vetor_usuario], nomes_trilhas)
-    visualizar_matriz_original(vetores_trilhas, vetor_usuario)
+    # visualizar_matriz_coloridaNormalizada(vetores_trilhas, vetor_usuario)
+    # nomes_trilhas = [trilha.nome for trilha in trilhas]
+    # visualizar_matriz_colorida(vetores_trilhas, [vetor_usuario], nomes_trilhas)
+    # visualizar_matriz_original(vetores_trilhas, vetor_usuario)
 
     # === PCA + Similaridade ===
     todos_vetores = np.array(vetores_trilhas + [vetor_usuario])
@@ -183,12 +183,12 @@ def recomendar_trilha(conteudos_usuario, nivel_conhecimento=None, objetivo="",
     vet_trilhas_red = vetores_reduzidos[:-1]
     vet_usuario_red = vetores_reduzidos[-1]
 
-    nomes_trilhas = [trilha.nome for trilha in trilhas]
-    visualizar_matriz_pca(vetores_reduzidos, nomes_trilhas)
+    # nomes_trilhas = [trilha.nome for trilha in trilhas]
+    # visualizar_matriz_pca(vetores_reduzidos, nomes_trilhas)
 
-    nomesTrilhas = [trilha.nome for trilha in trilhas]
-    nomesTrilhas = nomesTrilhas + ["Usuário"]
-    visualizar_matriz_pca_semPersonalizar(vetores_reduzidos , nomesTrilhas)
+    # nomesTrilhas = [trilha.nome for trilha in trilhas]
+    # nomesTrilhas = nomesTrilhas + ["Usuário"]
+    # visualizar_matriz_pca_semPersonalizar(vetores_reduzidos , nomesTrilhas)
 
     sims = cosine_similarity([vet_usuario_red], vet_trilhas_red)[0]
     resultados = list(zip(trilhas, sims))
@@ -197,11 +197,11 @@ def recomendar_trilha(conteudos_usuario, nivel_conhecimento=None, objetivo="",
     if not similares:
         similares = sorted(resultados, key=lambda x: x[1], reverse=True)[:10]
     
-    nomesTrilhas_similares = [tri for (tri, sim) in similares]
-    valoresTrilhas_similares = [sim for (trin, sim) in similares]
+    # nomesTrilhas_similares = [tri for (tri, sim) in similares]
+    # valoresTrilhas_similares = [sim for (trin, sim) in similares]
 
-    visualizar_matriz_similaridade(nomesTrilhas_similares, valoresTrilhas_similares)
-    visualizar_similaridade_barras(nomesTrilhas_similares, valoresTrilhas_similares)
+    # visualizar_matriz_similaridade(nomesTrilhas_similares, valoresTrilhas_similares)
+    # visualizar_similaridade_barras(nomesTrilhas_similares, valoresTrilhas_similares)
 
     # === Regra de negócio: retorna só UMA trilha ===
     if nivel_conhecimento:
@@ -244,192 +244,192 @@ def recomendar_trilha(conteudos_usuario, nivel_conhecimento=None, objetivo="",
     return [trilha_escolhida]
 
 
-def visualizar_matriz_coloridaNormalizada(vetores_trilha, vetores_usuario, caminho_arquivo="recomendarTrilhas/static/matriz_normalizada_colorida.png"):
-    todos_vetores = np.array(vetores_trilha + vetores_usuario)
+# def visualizar_matriz_coloridaNormalizada(vetores_trilha, vetores_usuario, caminho_arquivo="recomendarTrilhas/static/matriz_normalizada_colorida.png"):
+#     todos_vetores = np.array(vetores_trilha + vetores_usuario)
 
-    # Normalizando os valores para um melhor contraste visual
-    matriz_normalizada = (todos_vetores - np.min(todos_vetores)) / (np.max(todos_vetores) - np.min(todos_vetores))
+#     # Normalizando os valores para um melhor contraste visual
+#     matriz_normalizada = (todos_vetores - np.min(todos_vetores)) / (np.max(todos_vetores) - np.min(todos_vetores))
 
-    # Cria figura
-    fig, ax = plt.subplots(figsize=(14,6))
+#     # Cria figura
+#     fig, ax = plt.subplots(figsize=(14,6))
 
-    # Cores: azul para os vetores das trilhas e vermelho para o vetores do usuário
-    cores = ['Blues'] * len(vetores_trilha) + ['Reds']
+#     # Cores: azul para os vetores das trilhas e vermelho para o vetores do usuário
+#     cores = ['Blues'] * len(vetores_trilha) + ['Reds']
 
-    for i, linha in enumerate(matriz_normalizada):
-        cmap = plt.get_cmap(cores[i])
-        ax.imshow([linha], aspect='auto', cmap=cmap,
-                    extent=[0, linha.shape[0], i, i+1],
-                    interpolation='nearest')
+#     for i, linha in enumerate(matriz_normalizada):
+#         cmap = plt.get_cmap(cores[i])
+#         ax.imshow([linha], aspect='auto', cmap=cmap,
+#                     extent=[0, linha.shape[0], i, i+1],
+#                     interpolation='nearest')
         
-    ax.set_yticks(np.arange(len(todos_vetores)) + 0.05)
-    ax.get_yticklabels([f"Trilha {i+1}" for i in range(len(vetores_trilha))]) + ["Usuário"]
+#     ax.set_yticks(np.arange(len(todos_vetores)) + 0.05)
+#     ax.get_yticklabels([f"Trilha {i+1}" for i in range(len(vetores_trilha))]) + ["Usuário"]
 
-    # Exibe a matriz como imagem
-    # ax.imshow(matriz_normalizada, aspect='auto', cmap='Blues')
+#     # Exibe a matriz como imagem
+#     # ax.imshow(matriz_normalizada, aspect='auto', cmap='Blues')
 
-    # # Destaca o vetor do usuário com uma linha
-    # idx_usuario = len(vetores_trilha)
-    # faixa = Rectangle((0, idx_usuario), matriz_normalizada.shape[1], 1, linewidth=0, edgecolor=None, facecolor='red', alpha=0.3)
-    # ax.add_patch(faixa)
-    # ax.axhline(idx_usuario - 0.5, color='red', linewidth=2, label='Usuário')
+#     # # Destaca o vetor do usuário com uma linha
+#     # idx_usuario = len(vetores_trilha)
+#     # faixa = Rectangle((0, idx_usuario), matriz_normalizada.shape[1], 1, linewidth=0, edgecolor=None, facecolor='red', alpha=0.3)
+#     # ax.add_patch(faixa)
+#     # ax.axhline(idx_usuario - 0.5, color='red', linewidth=2, label='Usuário')
 
-    ax.set_title("Matriz Original - Trilhas (azul) e Usuário (linha vermelha)", fontsize=14)
-    ax.set_xlabel("Dimensões do vetor", fontsize=12)
-    ax.set_ylabel("Vetores (trilhas + usuário)", fontsize=12)
-    plt.tight_layout()
+#     ax.set_title("Matriz Original - Trilhas (azul) e Usuário (linha vermelha)", fontsize=14)
+#     ax.set_xlabel("Dimensões do vetor", fontsize=12)
+#     ax.set_ylabel("Vetores (trilhas + usuário)", fontsize=12)
+#     plt.tight_layout()
 
-    plt.savefig(caminho_arquivo)
-    plt.close()
+#     plt.savefig(caminho_arquivo)
+#     plt.close()
 
-def visualizar_matriz_colorida(vetores_trilhas, vetores_usuario, nomes_trilha=None, caminho_arquivo="recomendarTrilhas/static/matriz_colorida_sem_normaliza.png"):
-    todos_vetores = np.array(vetores_trilhas + vetores_usuario)
+# def visualizar_matriz_colorida(vetores_trilhas, vetores_usuario, nomes_trilha=None, caminho_arquivo="recomendarTrilhas/static/matriz_colorida_sem_normaliza.png"):
+#     todos_vetores = np.array(vetores_trilhas + vetores_usuario)
 
-    # Define os rótulos do eixo Y
-    if nomes_trilha is None:
-        nomes_trilha = [f"Trilha {i+1}" for i in range(len(vetores_trilhas))]
-    nomes_eixo_y = nomes_trilha + [f"Usuário {i+1}" for i in range(len(vetores_usuario))]
+#     # Define os rótulos do eixo Y
+#     if nomes_trilha is None:
+#         nomes_trilha = [f"Trilha {i+1}" for i in range(len(vetores_trilhas))]
+#     nomes_eixo_y = nomes_trilha + [f"Usuário {i+1}" for i in range(len(vetores_usuario))]
     
-    # cria a figura
-    fig, ax = plt.subplots(figsize=(14, 6))
+#     # cria a figura
+#     fig, ax = plt.subplots(figsize=(14, 6))
 
-    # Exibe cada linha com a cor diferente
-    indices = list(range(len(todos_vetores)))[::-1] #inverte os índices
-    for j, i in enumerate(indices):
-        linha = todos_vetores[i]       
-        cmap = 'Blues' if i < len(vetores_trilhas) else 'Reds'
-        ax.imshow([linha], aspect='auto', cmap=cmap, extent=[0, linha.shape[0], j, j+1])
+#     # Exibe cada linha com a cor diferente
+#     indices = list(range(len(todos_vetores)))[::-1] #inverte os índices
+#     for j, i in enumerate(indices):
+#         linha = todos_vetores[i]       
+#         cmap = 'Blues' if i < len(vetores_trilhas) else 'Reds'
+#         ax.imshow([linha], aspect='auto', cmap=cmap, extent=[0, linha.shape[0], j, j+1])
     
-    ax.set_yticks(np.arange(len(todos_vetores)) + 0.5)
-    ax.set_yticklabels(nomes_eixo_y[::-1])
+#     ax.set_yticks(np.arange(len(todos_vetores)) + 0.5)
+#     ax.set_yticklabels(nomes_eixo_y[::-1])
 
-    ax.set_title("Matriz Original - Vetores das Trilhas (azul) e do Usuário (vermelho)")
-    ax.set_xlabel("Dimensões do vetor")
-    ax.set_ylabel("Vetores (trilhas + usuário)")
-    plt.tight_layout()
+#     ax.set_title("Matriz Original - Vetores das Trilhas (azul) e do Usuário (vermelho)")
+#     ax.set_xlabel("Dimensões do vetor")
+#     ax.set_ylabel("Vetores (trilhas + usuário)")
+#     plt.tight_layout()
 
-    plt.savefig(caminho_arquivo)
-    plt.close()
-
-
-def visualizar_matriz_original(vetores_trilhas, vetores_usuarios, caminho_arquivo="recomendarTrilhas/static/matriz_original.png"):
-    #Junta os vetores
-    todos_vetores = np.array(vetores_trilhas + vetores_usuarios)
-
-    #Cria a lista de cores para cada vetor
-    cores = ['Blues'] * len(vetores_trilhas) + ['Reds']
-
-    #Cria o heatmap linha por linha com cor personalizada
-    fig, ax = plt.subplots(figsize=(14, 6))
-    for i, linha in enumerate(todos_vetores):
-        sns.heatmap([linha], cmap=cores[i], cbar=False, ax=ax, xticklabels=False, yticklabels=False, linewidths=0.5, linecolor='gray')
-
-    ax.set_title("Matriz Original - Vetores das Trilhas e do Usuário")
-    ax.set_xlabel("Dimensões do vetor")
-    ax.set_ylabel("Vetores (trilhas + usuário)")
-    plt.tight_layout()
-
-    plt.savefig(caminho_arquivo)
-    plt.close()
+#     plt.savefig(caminho_arquivo)
+#     plt.close()
 
 
-def visualizar_matriz_pca(vetoresReduzidos, nomes_trilhas, caminho_arquivo="recomendarTrilhas/static/pca_matriz_personalizada.png"):
-    if vetoresReduzidos.shape[1] < 2:
-        print("Não tem componentes suficiente")
-        return
+# def visualizar_matriz_original(vetores_trilhas, vetores_usuarios, caminho_arquivo="recomendarTrilhas/static/matriz_original.png"):
+#     #Junta os vetores
+#     todos_vetores = np.array(vetores_trilhas + vetores_usuarios)
+
+#     #Cria a lista de cores para cada vetor
+#     cores = ['Blues'] * len(vetores_trilhas) + ['Reds']
+
+#     #Cria o heatmap linha por linha com cor personalizada
+#     fig, ax = plt.subplots(figsize=(14, 6))
+#     for i, linha in enumerate(todos_vetores):
+#         sns.heatmap([linha], cmap=cores[i], cbar=False, ax=ax, xticklabels=False, yticklabels=False, linewidths=0.5, linecolor='gray')
+
+#     ax.set_title("Matriz Original - Vetores das Trilhas e do Usuário")
+#     ax.set_xlabel("Dimensões do vetor")
+#     ax.set_ylabel("Vetores (trilhas + usuário)")
+#     plt.tight_layout()
+
+#     plt.savefig(caminho_arquivo)
+#     plt.close()
+
+
+# def visualizar_matriz_pca(vetoresReduzidos, nomes_trilhas, caminho_arquivo="recomendarTrilhas/static/pca_matriz_personalizada.png"):
+#     if vetoresReduzidos.shape[1] < 2:
+#         print("Não tem componentes suficiente")
+#         return
     
-    #Separando trilhas e usuários
-    vetorTrilha_reduzido = vetoresReduzidos[:-1]
-    vetorUsuario_reduzido = vetoresReduzidos[-1]
+#     #Separando trilhas e usuários
+#     vetorTrilha_reduzido = vetoresReduzidos[:-1]
+#     vetorUsuario_reduzido = vetoresReduzidos[-1]
 
-    # criar gráfico de dispensão
-    plt.figure(figsize=(12, 7))
-    plt.scatter(vetorTrilha_reduzido[:, 0], vetorTrilha_reduzido[:, 1], color='blue', label='Trilhas')
-    plt.scatter(vetorUsuario_reduzido[0], vetorUsuario_reduzido[1], color='red', label='Usuário', marker='X', s=120)
+#     # criar gráfico de dispensão
+#     plt.figure(figsize=(12, 7))
+#     plt.scatter(vetorTrilha_reduzido[:, 0], vetorTrilha_reduzido[:, 1], color='blue', label='Trilhas')
+#     plt.scatter(vetorUsuario_reduzido[0], vetorUsuario_reduzido[1], color='red', label='Usuário', marker='X', s=120)
 
-    # Adiciona rótulos nas trilhas
-    textos = []
-    for i, nome in enumerate(nomes_trilhas):
-        x = vetorTrilha_reduzido[i][0]
-        y = vetorTrilha_reduzido[i][1]
-        textos.append(plt.text(x + 0.05, y, nome, fontsize=9, color='blue'))
+#     # Adiciona rótulos nas trilhas
+#     textos = []
+#     for i, nome in enumerate(nomes_trilhas):
+#         x = vetorTrilha_reduzido[i][0]
+#         y = vetorTrilha_reduzido[i][1]
+#         textos.append(plt.text(x + 0.05, y, nome, fontsize=9, color='blue'))
 
-    # Rótulo do usuário
-    plt.text(vetorUsuario_reduzido[0] + 0.05, vetorUsuario_reduzido[1], "Usuário", fontsize=10, color='red', weight='bold')
+#     # Rótulo do usuário
+#     plt.text(vetorUsuario_reduzido[0] + 0.05, vetorUsuario_reduzido[1], "Usuário", fontsize=10, color='red', weight='bold')
 
-    # Ajusta o texto para evitar que fique embolado
-    adjust_text(textos, arrowprops=dict(arrowstyle='-', color='gray'))
+#     # Ajusta o texto para evitar que fique embolado
+#     adjust_text(textos, arrowprops=dict(arrowstyle='-', color='gray'))
 
-    plt.xlabel("Componentes de PCA 1 eixo x")
-    plt.ylabel("Componentes PCA 2 eixo 2")
-    plt.title("Dispersão dos Vetores PCA: Trilhas x Usuário")
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
+#     plt.xlabel("Componentes de PCA 1 eixo x")
+#     plt.ylabel("Componentes PCA 2 eixo 2")
+#     plt.title("Dispersão dos Vetores PCA: Trilhas x Usuário")
+#     plt.legend()
+#     plt.grid(True)
+#     plt.tight_layout()
 
-    # Salvando a imagem
-    plt.savefig(caminho_arquivo)
-    plt.close()
+#     # Salvando a imagem
+#     plt.savefig(caminho_arquivo)
+#     plt.close()
 
 
-#gerar a imagem sem personalização
-def visualizar_matriz_pca_semPersonalizar(vetoresReduzidos, nomes_trilha, caminho_arquivo="recomendarTrilhas/static/pca_matriz_sem_personalizacao.png"):
-    fig, ax = plt.subplots(figsize=(12, 6))
+# #gerar a imagem sem personalização
+# def visualizar_matriz_pca_semPersonalizar(vetoresReduzidos, nomes_trilha, caminho_arquivo="recomendarTrilhas/static/pca_matriz_sem_personalizacao.png"):
+#     fig, ax = plt.subplots(figsize=(12, 6))
 
-    # Plota o heatmap
-    sns.heatmap(vetoresReduzidos, cmap="YlGnBu", cbar=True, ax=ax, yticklabels=nomes_trilha)
+#     # Plota o heatmap
+#     sns.heatmap(vetoresReduzidos, cmap="YlGnBu", cbar=True, ax=ax, yticklabels=nomes_trilha)
 
-    # Pega a última linha (usuário)
-    ultima_linha = vetoresReduzidos.shape[0] - 1
-    n_colunas = vetoresReduzidos.shape[1]
+#     # Pega a última linha (usuário)
+#     ultima_linha = vetoresReduzidos.shape[0] - 1
+#     n_colunas = vetoresReduzidos.shape[1]
 
-    # Adiciona um retângulo vermelho em volta da últma linha
-    rect = Rectangle((0, ultima_linha), n_colunas, 1, fill=False, edgecolor="red", linewidth=2)
-    ax.add_patch(rect)
+#     # Adiciona um retângulo vermelho em volta da últma linha
+#     rect = Rectangle((0, ultima_linha), n_colunas, 1, fill=False, edgecolor="red", linewidth=2)
+#     ax.add_patch(rect)
 
-     # Labels e título
-    ax.set_xlabel("Componentes PCA")
-    ax.set_ylabel("Vetores (trilhas + usuário)")
-    ax.set_title("Matriz PCA - Vetores Reduzidos")
+#      # Labels e título
+#     ax.set_xlabel("Componentes PCA")
+#     ax.set_ylabel("Vetores (trilhas + usuário)")
+#     ax.set_title("Matriz PCA - Vetores Reduzidos")
 
-    plt.tight_layout()
-    plt.savefig(caminho_arquivo)
-    plt.close()
+#     plt.tight_layout()
+#     plt.savefig(caminho_arquivo)
+#     plt.close()
     
-# gerar a imagem da matriz de medição de similaridade
-def visualizar_matriz_similaridade(trilhas, similaridade, caminho_arquivo="recomendarTrilhas/static/matriz_similaridade.png"):
-    # Converte para matriz 2D (1 linha = usuário, colunas = trilhas)
-    similaridade = np.array(similaridade, dtype=float).reshape(1, -1)
+# # gerar a imagem da matriz de medição de similaridade
+# def visualizar_matriz_similaridade(trilhas, similaridade, caminho_arquivo="recomendarTrilhas/static/matriz_similaridade.png"):
+#     # Converte para matriz 2D (1 linha = usuário, colunas = trilhas)
+#     similaridade = np.array(similaridade, dtype=float).reshape(1, -1)
 
-    plt.figure(figsize=(12, 6))
-    sns.heatmap(similaridade, annot=True, cmap="YlGnBu", xticklabels=trilhas, yticklabels=["Usuário"])
-    plt.title("Similaridade de cosseno entre o vetor de usuário e o vetor de trilhas")
-    plt.xlabel("Trilhas")
-    plt.ylabel("Usuário")
-    plt.tight_layout()
-    plt.savefig(caminho_arquivo)
-    plt.close()
+#     plt.figure(figsize=(12, 6))
+#     sns.heatmap(similaridade, annot=True, cmap="YlGnBu", xticklabels=trilhas, yticklabels=["Usuário"])
+#     plt.title("Similaridade de cosseno entre o vetor de usuário e o vetor de trilhas")
+#     plt.xlabel("Trilhas")
+#     plt.ylabel("Usuário")
+#     plt.tight_layout()
+#     plt.savefig(caminho_arquivo)
+#     plt.close()
 
-def visualizar_similaridade_barras(trilhas, similaridade, caminho_arquivo="recomendarTrilhas/static/grafico_barra_similaridade.png"):
-    similaridade = np.array(similaridade, dtype=float)
+# def visualizar_similaridade_barras(trilhas, similaridade, caminho_arquivo="recomendarTrilhas/static/grafico_barra_similaridade.png"):
+#     similaridade = np.array(similaridade, dtype=float)
 
-    # ordena da maior similaridade para a menor
-    indices_ordenados = np.argsort(similaridade)[::-1]
-    trilhasOrdenadas = [trilhas[i] for i in indices_ordenados]
-    similaridades_ordenadas = similaridade[indices_ordenados]
+#     # ordena da maior similaridade para a menor
+#     indices_ordenados = np.argsort(similaridade)[::-1]
+#     trilhasOrdenadas = [trilhas[i] for i in indices_ordenados]
+#     similaridades_ordenadas = similaridade[indices_ordenados]
 
-    # criar índices numericos para o eixo y
-    indice_y = np.arange(len(trilhasOrdenadas))
+#     # criar índices numericos para o eixo y
+#     indice_y = np.arange(len(trilhasOrdenadas))
     
-    plt.figure(figsize=(12, 6))
-    plt.barh(indice_y, similaridades_ordenadas, color="skyblue")
-    plt.yticks(indice_y, trilhasOrdenadas) # substitui o índice pelos os nomes das trilhas
-    plt.xlabel("Similaridade de cosseno")
-    plt.title("Similaridade de cosseno entre usuários e trilhas")
-    plt.gca().invert_yaxis() # a trilha mais similar fica no topo
-    plt.tight_layout()
-    plt.savefig(caminho_arquivo)
-    plt.close()
+#     plt.figure(figsize=(12, 6))
+#     plt.barh(indice_y, similaridades_ordenadas, color="skyblue")
+#     plt.yticks(indice_y, trilhasOrdenadas) # substitui o índice pelos os nomes das trilhas
+#     plt.xlabel("Similaridade de cosseno")
+#     plt.title("Similaridade de cosseno entre usuários e trilhas")
+#     plt.gca().invert_yaxis() # a trilha mais similar fica no topo
+#     plt.tight_layout()
+#     plt.savefig(caminho_arquivo)
+#     plt.close()
 
 def recomendar_proxima_trilha(trilha_concluida, usuario=None, n_recomendacoes=3, limiar_similaridade= 0.50):
     model = Doc2Vec.load(MODEL_PATH)
