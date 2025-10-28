@@ -23,21 +23,38 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
 
     def save_user(self, request, sociallogin, form=None):
         User = get_user_model()
+
+        # Gera um username único baseado no e-mail
+        email = sociallogin.account.extra_data.get('email', '')
+        base_username = email.split('@')[0] if email else 'user'
+        username = base_username
+        counter = 1
+        while User.objects.filter(username=username).exists():
+            username = f"{base_username}{counter}"
+            counter += 1
+
+        # Define o username antes de salvar
+        sociallogin.user.username = username
+
+        # Salva o usuário normalmente
         user = super().save_user(request, sociallogin, form)
 
+        # Gera senha aleatória se não tiver senha
         if not user.has_usable_password():
-            # gerar senha aleátoria para o usuário que fizer login com o google
             user.set_password(User.objects.create_user(username='temp').make_random_password())
             user.save()
-        # Atribuir permissão automaticamente
+
+        # Atribui permissão automaticamente
         try:
             permission = Permission.objects.get(codename='acessar_trilha')
             user.user_permissions.add(permission)
         except Permission.DoesNotExist:
             pass
 
+        # Cria perfil de usuário comum se necessário
         if not hasattr(user, 'administrador'):
             from Sistema.signals import criar_usario_comun
             criar_usario_comun(user)
 
         return user
+

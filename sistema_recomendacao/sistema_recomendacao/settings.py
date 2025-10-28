@@ -69,6 +69,9 @@ INSTALLED_APPS = [
     'Sistema',
     'administrador',
     'usuarioComun',
+
+    #Ciar o diagrama de classe automaticamente
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
