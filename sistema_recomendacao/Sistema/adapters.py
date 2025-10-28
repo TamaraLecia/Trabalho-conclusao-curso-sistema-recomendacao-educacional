@@ -2,6 +2,7 @@ from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
+from django.utils.crypto import get_random_string
 
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
     def pre_social_login(self, request, sociallogin):
@@ -41,8 +42,9 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
 
         # Gera senha aleatória se não tiver senha
         if not user.has_usable_password():
-            random_password = User.objects.make_random_password()
-            user.set_password(random_password)
+             user.set_password(get_random_string(12))
+            # random_password = User.objects.make_random_password()
+            # user.set_password(random_password)
             #user.set_password(User.objects.create_user(username='temp').make_random_password())
             user.save()
 
