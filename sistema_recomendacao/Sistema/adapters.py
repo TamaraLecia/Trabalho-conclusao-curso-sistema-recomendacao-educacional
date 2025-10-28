@@ -41,7 +41,9 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
 
         # Gera senha aleatória se não tiver senha
         if not user.has_usable_password():
-            user.set_password(User.objects.create_user(username='temp').make_random_password())
+            random_password = User.objects.make_random_password()
+            user.set_password(random_password)
+            #user.set_password(User.objects.create_user(username='temp').make_random_password())
             user.save()
 
         # Atribui permissão automaticamente
