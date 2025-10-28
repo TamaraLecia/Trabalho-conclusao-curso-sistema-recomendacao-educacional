@@ -88,6 +88,9 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
+X_FRAME_OPTIONS = "ALLOWALL"
+
+
 # Provider specific settings
 
 

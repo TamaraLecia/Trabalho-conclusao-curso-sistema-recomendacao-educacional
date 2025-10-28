@@ -21,7 +21,7 @@
     <div class="video-wrapper mb-4">
       <div class="ratio ratio-16x9">
         <iframe id="player"
-                src="https://www.youtube.com/embed/{{ capitulo.youtube_embed_url|slice:'-11:' }}?enablejsapi=1"
+                src="{{ capitulo.youtube_embed_url }}?enablejsapi=1"
                 title="YouTube video"
                 frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

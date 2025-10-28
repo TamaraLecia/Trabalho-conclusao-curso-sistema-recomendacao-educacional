@@ -73,7 +73,11 @@ class Capitulo(models.Model):
         if url_data.hostname in ["www.youtube.com", "youtube.com"]:
             return parse_qs(url_data.query).get("v", [None])[0]
         elif url_data.hostname == "youtu.be":
-            return url_data.path[1:]
+            return url_data.path.lstrip("/").split("?")[0] #remove parâmetros extras
+        # if url_data.hostname in ["www.youtube.com", "youtube.com"]:
+        #     return parse_qs(url_data.query).get("v", [None])[0]
+        # elif url_data.hostname == "youtu.be":
+        #     return url_data.path[1:]
         return None
     
     @property

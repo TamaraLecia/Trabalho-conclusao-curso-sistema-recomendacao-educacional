@@ -326,12 +326,12 @@ def concluir_capitulo(request, capitulo_id):
     #Ler a requisição (tempo assistido e duração)
     try:
         data = json.loads(request.body)
-        tempo_assitido = float(data.get("tempo_assistido", 0))
+        tempo_assistido = float(data.get("tempo_assistido", 0))
         duracao = float(data.get("duracao", 1))
     except Exception:
-        tempo_assitido, duracao = 0, 1
+        tempo_assistido, duracao = 0, 1
     
-    percentual = (tempo_assitido / duracao) * 100 if duracao > 0 else 0
+    percentual = (tempo_assistido / duracao) * 100 if duracao > 0 else 0
 
     progresso, _ = ProgressoCapitulo.objects.get_or_create(
         usuario=usuario,
