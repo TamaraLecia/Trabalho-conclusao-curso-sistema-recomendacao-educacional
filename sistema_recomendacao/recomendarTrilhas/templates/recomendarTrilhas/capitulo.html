@@ -3,6 +3,8 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css1/capitulo.css' %}">
+<!-- CSS do Plyr -->
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
 <div class="container capitulo-container">
 
@@ -17,16 +19,15 @@
     </div>
   {% else %}
 
-    <!-- vídeo responsivo -->
+    <!-- vídeo responsivo com Plyr -->
     <div class="video-wrapper mb-4">
       <div class="ratio ratio-16x9">
-        <iframe id="player"
-                src="{{ capitulo.youtube_embed_url }}?enablejsapi=1"
-                title="YouTube video"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen>
-        </iframe>
+        <video id="player"
+               playsinline
+               controls
+               data-plyr-provider="youtube"
+               data-plyr-embed-id="{{ capitulo.youtube_id }}">
+        </video>
       </div>
     </div>
 
@@ -43,36 +44,31 @@
       </a>
     </div>
 
-    <!-- API do YouTube -->
-    <script src="https://www.youtube.com/iframe_api"></script>
+    <!-- JS do Plyr -->
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script>
-      let player;
       const botao = document.getElementById("btnConcluir");
       let metadeAtingida = false;
 
-      function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player', {
-          events: { 'onStateChange': onPlayerStateChange }
-        });
-      }
+      // Inicializa o player Plyr
+      const player = new Plyr('#player');
 
-      function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.PLAYING) {
-          setInterval(() => {
-            const duracao = player.getDuration();
-            const tempoAtual = player.getCurrentTime();
+      // Escuta o tempo de reprodução
+      player.on('timeupdate', event => {
+        const duracao = player.duration;
+        const tempoAtual = player.currentTime;
 
-            if (!metadeAtingida && tempoAtual >= duracao / 2) {
-              metadeAtingida = true;
-              botao.disabled = false;
-            }
-          }, 1000);
+        if (!metadeAtingida && tempoAtual >= duracao / 2) {
+          metadeAtingida = true;
+          botao.disabled = false;
         }
-      }
+      });
 
+      // Ao clicar em concluir
       botao.addEventListener("click", function() {
-        const duracao = player.getDuration();
-        const tempoAtual = player.getCurrentTime();
+        const duracao = player.duration;
+        const tempoAtual = player.currentTime;
+
         fetch("{% url 'concluir_capitulo' capitulo.id %}", {
           method: "POST",
           headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json"},

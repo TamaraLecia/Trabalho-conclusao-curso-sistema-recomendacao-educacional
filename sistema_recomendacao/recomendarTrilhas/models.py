@@ -71,9 +71,16 @@ class Capitulo(models.Model):
     def youtube_id(self):
         url_data = urlparse(self.link_video)
         if url_data.hostname in ["www.youtube.com", "youtube.com"]:
-            return parse_qs(url_data.query).get("v", [None])[0]
+            if url_data.path == "/watch":
+                return parse_qs(url_data.query).get("v", [None])[0]
+            elif url_data.path.startswith("/embed/"):
+                return url_data.path.split("/embed")[-1]
         elif url_data.hostname == "youtu.be":
-            return url_data.path.lstrip("/").split("?")[0] #remove parâmetros extras
+            return url_data.path.lstrip("/").split("?")[0]
+        # if url_data.hostname in ["www.youtube.com", "youtube.com"]:
+        #     return parse_qs(url_data.query).get("v", [None])[0]
+        # elif url_data.hostname == "youtu.be":
+        #     return url_data.path.lstrip("/").split("?")[0] #remove parâmetros extras
         # if url_data.hostname in ["www.youtube.com", "youtube.com"]:
         #     return parse_qs(url_data.query).get("v", [None])[0]
         # elif url_data.hostname == "youtu.be":
