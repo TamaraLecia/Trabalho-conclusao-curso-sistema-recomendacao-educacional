@@ -4,14 +4,14 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css1/estilo.css' %}">
 
-<form method="post" class="container py-4">
+<form method="post" class="container py-4" id="questionarioForm">
   {% csrf_token %}
   <input type="hidden" name="inicio" value="{{ inicio|default:1 }}">
 
   {% if inicio == 1 %}
   <!-- Pergunta 1 -->
   <div class="form-section form-bg-suave p-4 rounded shadow-sm">
-    <h3><i class="bi-list-check me-2 text-primary"></i> 1. Deste conteúdos quais você deseja estudar?</h3>
+    <h3><i class="bi-list-check me-2 text-primary"></i> 1. Quais destes conteúdos você tem interesse em estudar?</h3>
     <div class="row mt-4">
       {% for conteudo in conteudos %}
       <div class="col-12 col-sm-6 col-md-4 mb-3">
@@ -22,6 +22,7 @@
       </div>
       {% endfor %}
     </div>
+    <div id="erro1" class="mt-2"></div>
     <div class="text-end mt-3">
       <button class="btn btn-primary rounded" type="submit" onclick="this.form.inicio.value=2">Continuar</button>
     </div>
@@ -49,6 +50,7 @@
     {% for conteudo in conteudos_selecionados %}
     <input type="hidden" name="Conteudo" value="{{ conteudo }}">
     {% endfor %}
+    <div id="erro2" class="mt-2"></div>
     <div class="text-end mt-3">
       <button class="btn btn-primary rounded" type="submit" onclick="this.form.inicio.value=3">Continuar</button>
     </div>
@@ -57,9 +59,9 @@
   {% elif inicio == 3 %}
   <!-- Pergunta 3 -->
   <div class="form-section form-bg-suave p-4 rounded shadow-sm">
-    <h3><i class="bi bi-pencil-square me-2 text-primary"></i> 3. Qual o seu objetivo ao estudar este(s) conteúdo?</h3>
+    <h3><i class="bi bi-pencil-square me-2 text-primary"></i> 3. Qual o seu objetivo ao estudar este(s) conteúdo(s)?</h3>
     <div class="mb-4">
-      <textarea name="objetivo" class="form-control" rows="6" placeholder="Descreva seu objetivo"></textarea>
+      <textarea name="objetivo" class="form-control" rows="6" placeholder="Descreva seu objetivo" required></textarea>
     </div>
 
     {% for conteudo in conteudos_selecionados %}
@@ -69,6 +71,7 @@
     <input type="hidden" name="nivel_{{ conteudo }}" value="{{ nivel }}">
     {% endfor %}
 
+    <div id="erro3" class="mt-2"></div>
     <div class="text-end mt-3">
       <button id="btn-gerar" class="btn btn-primary rounded" type="submit" onclick="this.form.inicio.value=4">Gerar recomendação</button>
     </div>
@@ -119,4 +122,49 @@
 </div>
 
 <script src="{% static 'JavaScript/script.js' %}"></script>
+<!-- Validaçoes das perguntas -->
+<script>
+  document.getElementById("questionarioForm").addEventListener("submit", function(e) {
+    const inicio = this.inicio.value;
+
+    // Limpa mensagens anteriores
+    document.querySelectorAll('#erro1, #erro2, #erro3').forEach(el => el.innerHTML = "");
+
+    let errorDiv = null;
+
+    // Validação da Pergunta 1
+    if(inicio == "2"){
+      const checkboxes = document.querySelectorAll('input[name="Conteudo"]');
+      const algumMarcado = Array.from(checkboxes).some(cb => cb.checked);
+      if(!algumMarcado){
+        e.preventDefault();
+        document.getElementById("erro1").innerHTML = 
+          '<div class="alert alert-danger p-2 mt-2"> ⚠️ Selecione pelo menos um conteúdo antes de continuar.</div>'
+      }
+    }
+
+    if (inicio == "3"){
+      const sliders = document.querySelectorAll('input[type="range"]');
+      let todosZero = true;
+      sliders.forEach(slider => {
+        if (parseInt(slider.value) > 0){
+          todosZero = false;
+        }
+      });
+      if (todosZero) {
+        e.preventDefault();
+        document.getElementById("erro2").innerHTML =
+          '<div class="alert alert-danger p-2 mt-2">⚠️ Ajuste pelo menos um nível de conhecimento antes de continuar.</div>';
+      }
+    }
+
+    // Pergunta 3 já tem required no textarea → o navegador mostra a mensagem padrão
+
+    // Se houve erro, rola até ele
+    if(errorDiv){
+      errorDiv.scrollIntoView({behavior: "smooth", block: "center"});
+    }
+
+  });
+</script>
 {% endblock %}
