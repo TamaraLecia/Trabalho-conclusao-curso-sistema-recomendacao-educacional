@@ -84,7 +84,7 @@ def editarDadosAdmin(request, username):
         editarUserForm = EditarUserForm(instance=user)
         editarAdministradorForm = AdministradorForm(instance=administrador)
 
-    return render(request, 'administrador/cadastrarAdminForm.html', {'editarUserForm' : editarUserForm, 'editarAdministradorForm' : editarAdministradorForm, 'Administrador' : administrador} )
+    return render(request, 'administrador/gerenciarContaAdminForm.html', {'editarUserForm' : editarUserForm, 'editarAdministradorForm' : editarAdministradorForm, 'Administrador' : administrador} )
 
 def editarSenha(request, username):
     administrador = get_object_or_404(Administrador, user__username=username)
@@ -100,7 +100,7 @@ def editarSenha(request, username):
     else:
         formSenha = SenhaForm(user)
     
-    return render(request,  'administrador/cadastrarAdminForm.html', {'formSenha': formSenha,})
+    return render(request,  'administrador/gerenciarContaAdminForm.html', {'formSenha': formSenha,})
 
 @login_required
 def realizarLogout(request):

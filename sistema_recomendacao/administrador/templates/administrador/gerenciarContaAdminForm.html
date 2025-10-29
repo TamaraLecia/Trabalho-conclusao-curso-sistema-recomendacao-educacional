@@ -1,18 +1,21 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Perfil de Usuário - EstudaTech</title>
+  <title>Gerenciar Administrador - EstudaTech</title>
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Raleway:wght@400;600;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Raleway:wght@400;600;700&family=Ubuntu:wght@400;500;700&display=swap"
+    rel="stylesheet">
 
-  <link href="{% static 'img/sisRecomendacao.jpg' %}" rel="icon">
-  
+    <link href="{% static 'img/sisRecomendacao.jpg' %}" rel="icon">
+
   <!-- Vendor CSS Files -->
   <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
   <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
@@ -34,7 +37,10 @@
       </a>
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="{% url 'indexUsuarioComun' %}" style="color: #000000;">Início</a></li>
+          <li><a href="{% url 'verPerfilAdmin' request.user.username  %}">voltar para o perfil</a></li>
+          <!-- <li><a href="#">Sobre</a></li>
+          <li><a href="#">Cursos</a></li>
+          <li><a href="#">Contato</a></li> -->
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
@@ -46,17 +52,17 @@
     <!-- Page Title -->
     <div class="page-title light-background">
       <div class="container d-lg-flex justify-content-between align-items-center">
-        <h1 class="mb-2 mb-lg-0">Perfil de Usuário</h1>
+        <h1 class="mb-2 mb-lg-0">Gerenciar Administrador</h1>
         <nav class="breadcrumbs">
           <ol>
-            <li><a href="{% url 'indexUsuarioComun' %}">Voltar</a></li>
-            <li class="current">Perfil</li>
+            <li><a href="{% url 'indexAdm' %}">Início</a></li>
+            <li class="current">Administrador</li>
           </ol>
         </nav>
       </div>
     </div>
 
-    <!-- Perfil Section -->
+    <!-- Form Section -->
     <section id="enroll" class="enroll section">
       <div class="container" data-aos="fade-up" data-aos-delay="100">
         <div class="row">
@@ -64,56 +70,33 @@
             <div class="enrollment-form-wrapper">
 
               <div class="enrollment-header text-center mb-5" data-aos="fade-up" data-aos-delay="200">
-                <h2>👤 Dados do Perfil</h2>
-                <p>Visualize ou edite suas informações de usuário.</p>
+                <h2>👤 Dados do Usuário</h2>
+                <p>Edição de dados</p>
               </div>
 
-              <div class="card shadow-sm p-4">
-                <p><strong>Nome de usuário:</strong> {{ userUsuario.username }}</p>
-                <p><strong>Email:</strong> {{ userUsuario.email }}</p>
-                <p><strong>Nome:</strong> {{ usuarioComun.nome }}</p>
+              <form method="POST" action="" class="enrollment-form" data-aos="fade-up" data-aos-delay="300" id="formulario">
+                {% csrf_token %}
 
-                <div class="d-flex flex-wrap gap-2 mt-4">
-                  <a href="{% url 'editarUsuarioComun' usuarioComun.user.username %}" class="btn btn-outline-primary">
-                    <i class="bi bi-pencil-square me-1"></i> Editar Perfil
-                  </a>
-                  <a href="{% url 'editarSenhaUsuario' usuarioComun.user.username %}" class="btn btn-outline-secondary">
-                    <i class="bi bi-file-lock2-fill me-1"></i> Alterar Senha
-                  </a>
-                  <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusao">
-                    <i class="bi bi-trash3-fill me-1"></i> Excluir Conta
-                  </button>
+                {{ form_user }}
+                {{ editarUserForm }}
+                {{ editarAdministradorForm }}
+                {{ formSenha.as_p }}
+
+                <div class="row mt-4">
+                  <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-enroll">
+                      <i class="bi bi-check-circle me-2"></i>
+                      Salvar Dados
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </form>
 
             </div>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- Modal de Exclusão -->
-    <div class="modal fade" id="confirmarExclusao" tabindex="-1" aria-labelledby="confirmarExclusaoLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-danger">
-          <div class="modal-header bg-danger text-white">
-            <h5 class="modal-title" id="confirmarExclusaoLabel">Confirmar exclusão</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            Tem certeza que deseja excluir a sua conta? <br>
-            <strong>Essa ação não pode ser desfeita!</strong>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <form action="{% url 'excluirContaUsuario' %}" method="post">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-danger">Sim, eu quero excluir</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
 
   </main>
 
@@ -122,7 +105,7 @@
     <div class="container footer-top">
       <div class="row gy-4">
         <div class="col-lg-5 col-md-12 footer-about">
-          <a href="{% url 'indexUsuarioComun' %}" class="logo d-flex align-items-center">
+          <a href="{% url 'indexAdm' %}" class="logo d-flex align-items-center">
             <span class="sitename">EstudaTech</span>
           </a>
           <p>O EstudaTech é um sistema de recomendação educacional, com o propósito de recomendar trilhas de estudo com vídeos sobre conteúdos de informática, de acordo com as respostas obtidas no questionário.</p>
@@ -133,8 +116,25 @@
             <a href="#"><i class="bi bi-linkedin"></i></a>
           </div>
         </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <!-- <h4>Links úteis</h4>
+          <ul>
+            <li><a href="{% url 'indexAdm' %}">Início</a></li>
+            <li><a href="#">Sobre</a></li>
+            <li><a href="#">Cursos</a></li>
+            <li><a href="#">Contato</a></li>
+          </ul> -->
+        </div>
+
+        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+          <!-- <h4>Contato</h4>
+          <p>Email: info@estudatech.com</p>
+          <p>Telefone: +55 11 99999-9999</p> -->
+        </div>
       </div>
     </div>
+
     <div class="container copyright text-center mt-4">
       <p>© <span>Copyright</span> <strong class="px-1 sitename"></strong> <span>Trabalho de Conclusão de curso</span></p>
       <div class="credits">
