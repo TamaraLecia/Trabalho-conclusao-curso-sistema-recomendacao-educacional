@@ -3,8 +3,6 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css1/capitulo.css' %}">
-<!-- CSS do Plyr -->
-<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
 <div class="container capitulo-container">
 
@@ -19,70 +17,138 @@
     </div>
   {% else %}
 
-    <!-- vídeo responsivo com Plyr -->
-    <div class="video-wrapper mb-4">
-      <div class="ratio ratio-16x9">
-        <video id="player"
-               playsinline
-               controls
-               data-plyr-provider="youtube"
-               data-plyr-embed-id="{{ capitulo.youtube_id }}">
-        </video>
-      </div>
-    </div>
-
     <!-- descrição -->
     <p class="lead text-justify">{{ capitulo.descricao }}</p>
 
-    <!-- botões -->
-    <div class="mt-4 d-flex flex-wrap gap-2 justify-content-center">
-      <button id="btnConcluir" class="btn btn-success" disabled>
-        ✔ Marcar como concluído
-      </button>
-      <a href="{% url 'verTrilhaCaminho' capitulo.topico.trilha.id %}" class="btn btn-secondary">
-        Voltar para a trilha
-      </a>
+   <!-- Modal Bootstrap -->
+    <div class="modal fade" id="videoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="1" aria-labelledby="videoModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="videoModalLabel">Assistir vídeo</h5>
+          </div>
+          <div class="modal-body text-center">
+            <p class="mt-3">
+              O vídeo será aberto no Youtube em uma aba. Mantenha-o aberto para contabilizar o tempo.<br>
+              <strong>O sistema contabiliza o tempo real de permanência</strong>,
+              independentemente da velocidade de reprodução.<br>
+              Se assistir em 1.5x ou 2x, pode ser necessário aguardar mais tempo para que a conclusão seja liberada.
+            </p>
+            <div class="d-flex flex-wrap gap-2 justify-content-center mt-3">
+              <button id="btnAbrirVideo" class="btn btn-danger">
+                ▶ Abrir vídeo no YouTube
+              </button>
+              <button id="btnConcluir" class="btn btn-success" disabled>
+                ✔ Marcar como concluído
+              </button>
+              <a href="{% url 'verTrilhaCaminho' capitulo.topico.trilha.id %}" class="btn btn-secondary">
+                Voltar para a trilha
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <!-- JS do Plyr -->
-    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    
+    <!-- Script -->
     <script>
-      const botao = document.getElementById("btnConcluir");
-      let metadeAtingida = false;
+      let inicio = null;
+      let tempoAssistido = 0;
+      let intervalo = null;
 
-      // Inicializa o player Plyr
-      const player = new Plyr('#player');
+      const btnConcluir = document.getElementById("btnConcluir");
+      const btnAbrirVideo = document.getElementById("btnAbrirVideo");
+      const videoModal = document.getElementById('videoModal');
 
-      // Escuta o tempo de reprodução
-      player.on('timeupdate', event => {
-        const duracao = player.duration;
-        const tempoAtual = player.currentTime;
+      // Converte horas decimais em segundos(já convertida do campo horas do modelo)
+      const duracaoVideo = parseFloat('{{ capitulo.duracao_horas_video|default:"0" }}') * 3600;
 
-        if (!metadeAtingida && tempoAtual >= duracao / 2) {
-          metadeAtingida = true;
-          botao.disabled = false;
-        }
+      // Abre o modal automaticamente ao carregar a página
+      document.addEventListener("DOMContentLoaded", function(){
+        const modal = new bootstrap.Modal(videoModal);
+        modal.show();
       });
 
-      // Ao clicar em concluir
-      botao.addEventListener("click", function() {
-        const duracao = player.duration;
-        const tempoAtual = player.currentTime;
+      // Quando clicar em "Abrir vídeo", abre em nova e começa a contar
+      btnAbrirVideo.addEventListener("click", () => {
+        window.open("{{ capitulo.link_video }}", "_blank");
+        inicio = Date.now();
+        intervalo = setInterval(() => {
+          tempoAssistido = Math.floor((Date.now() - inicio) / 1000);
 
-        fetch("{% url 'concluir_capitulo' capitulo.id %}", {
+          if (duracaoVideo > 0 && tempoAssistido >= duracaoVideo / 2){
+            btnConcluir.disabled = false; // habilita o botão
+          }
+        }, 1000);
+      });
+
+      // Quando o modal fecha, calcula tempo
+      videoModal.addEventListener('hidden.bs.modal', () => {
+        clearInterval(intervalo);
+      });
+
+      // Ao clicar em conclur
+      btnConcluir.addEventListener("click", () => {
+        if(duracaoVideo > 0 && tempoAssistido < duracaoVideo / 2){
+          alert("Você ainda não assistiu pelo menos metade do vídeo.");
+          return;
+        }
+
+        fetch("{% url 'concluir_capitulo' capitulo.id %}",{
           method: "POST",
-          headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json"},
+          headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({
-            tempo_assistido: tempoAtual,
-            duracao: duracao
+            tempo_assistido: tempoAssistido,
+            duracao: duracaoVideo
           })
         }).then(response => response.json())
           .then(data => {
-            if (data.redirect_url) {
+            if (data.redirect_url){
               window.location.href = data.redirect_url;
             }
           });
       });
+
+      // // Quando o modal abre, começa a contar
+      // // const videoModal = document.getElementById('videoModal');
+      // videoModal.addEventListener('shown.bs.modal', () => {
+      //   inicio = Date.now();
+      //   intervalo = setInterval(() =>{
+      //     tempoAssistido = Math.floor((Date.now() - inicio) / 1000);
+
+      //     if (duracaoVideo > 0 && tempoAssistido >= duracaoVideo / 2){
+      //       btnConcluir.disabled = false; // habilita o botão
+      //     }
+      //   }, 1000)
+      // });
+
+      // // Quando o modal fecha, calcula tempo
+      // videoModal.addEventListener('hidden.bs.modal', () => {
+      //   clearInterval(intervalo);
+      // });
+
+      // // Ao clicar em concluir
+      // btnConcluir.addEventListener("click", () => {
+      //   fetch("{% url 'concluir_capitulo' capitulo.id %}", {
+      //     method: "POST",
+      //     headers: {
+      //       "X-CSRFToken": "{{ csrf_token }}",
+      //       "Content-Type": "application/json"
+      //     },
+      //     body: JSON.stringify({
+      //       tempo_assistido: tempoAssistido,
+      //       duracao: duracaoVideo
+      //     })
+      //   }).then(response => response.json())
+      //     .then(data => {
+      //       if (data.redirect_url){
+      //         window.location.href = data.redirect_url;
+      //       }
+      //     });
+      // });
     </script>
   {% endif %}
 

@@ -69,8 +69,6 @@ INSTALLED_APPS = [
     'Sistema',
     'administrador',
     'usuarioComun',
-
-    #Ciar o diagrama de classe automaticamente
 ]
 
 MIDDLEWARE = [
@@ -87,8 +85,6 @@ MIDDLEWARE = [
     # adicionado para fazer o deploy no railway
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
-
-X_FRAME_OPTIONS = "ALLOWALL"
 
 
 # Provider specific settings

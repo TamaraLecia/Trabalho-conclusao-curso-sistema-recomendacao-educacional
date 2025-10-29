@@ -10,6 +10,7 @@ from django.contrib.auth import get_user_model, logout
 from django.contrib.auth import update_session_auth_hash
 
 @login_required
+@permission_required('administrador.view_administrador', raise_exception=True)
 def index (request):
     return render(request, 'administrador/indexAdministrador.html',)
 

@@ -13,6 +13,7 @@ from django.db.models import Sum
 
 # Create your views here.
 @login_required
+@permission_required('usuariocomun.usuariocomun', raise_exception=True)
 def index (request):
     user = request.user
     # Se o usuário for administrador, redireciona para a tela de administrador
