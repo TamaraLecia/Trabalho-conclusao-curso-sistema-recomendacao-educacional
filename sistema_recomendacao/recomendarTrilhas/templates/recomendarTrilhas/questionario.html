@@ -95,6 +95,7 @@
           <div class="card-body d-flex flex-column">
             <h5 class="card-title">{{ trilha.nome }}</h5>
             <p class="card-text flex-grow-1">{{ trilha.descricao }}</p>
+            <p class="card-text flex-grow-1"><strong>Salve esta trilha clicando no botão abaixo. Assim, você poderá acessá-la quando quiser.</strong></p>
             <button type="submit" class="btn btn-primary mt-auto">Clique para acessar a trilha</button>
           </div>
         </div>
@@ -147,7 +148,7 @@
       const sliders = document.querySelectorAll('input[type="range"]');
       let todosZero = true;
       sliders.forEach(slider => {
-        if (parseInt(slider.value) > 0){
+        if (parseInt(slider.value) >= 0){
           todosZero = false;
         }
       });
