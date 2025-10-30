@@ -4,7 +4,7 @@ from . import views
 
 
 urlpatterns = [
-    path('questionario', views.responderQuestionario, name='questionario'),
+    path('questionario/', views.responderQuestionario, name='questionario'),
     path('verTrilhas/', views.lista_trilhas, name='verTrilha'),
     path('addTrilha/', views.criar_trilha_completa, name='addTrilha'),
     path("topico/<int:topico_id>/", views.editar_topico, name="editar_topico"),
