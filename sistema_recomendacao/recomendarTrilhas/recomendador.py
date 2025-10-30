@@ -135,6 +135,10 @@ def recomendar_trilha(conteudos_usuario, nivel_conhecimento=None, objetivo="",
     vetor_usuario = model.infer_vector(tokens_input)
 
     trilhas_db = Trilha.objects.all()
+    print("=== TRILHAS DISPONÍVEIS NO BANCO ===")
+    for t in trilhas_db:
+        print("-", t.id, t.nome)
+
     trilhas, vetores_trilhas, tokens_trilhas_cache = [], [], {}
 
     for trilha in trilhas_db:
@@ -147,32 +151,8 @@ def recomendar_trilha(conteudos_usuario, nivel_conhecimento=None, objetivo="",
     if not vetores_trilhas:
         return []
     
-    # visualizar_matriz_coloridaNormalizada(vetores_trilhas, vetor_usuario)
-    # nomes_trilhas = [trilha.nome for trilha in trilhas]
-    # visualizar_matriz_colorida(vetores_trilhas, [vetor_usuario], nomes_trilhas)
-    # visualizar_matriz_original(vetores_trilhas, vetor_usuario)
-
     # === PCA + Similaridade ===
     todos_vetores = np.array(vetores_trilhas + [vetor_usuario])
-    # max_componentes = min(todos_vetores.shape[0], todos_vetores.shape[1])
-    # if max_componentes < 2:
-    #     print("⚠️ Não há componentes suficientes para visualização 2D com PCA.")
-    #     visualizar_matriz_pca_semPersonalizar(todos_vetores)  # ou apenas pule
-    # else:
-    #     n_comp = min(n_componentes_pca, max_componentes)
-    #     pca = PCA(n_components=n_comp)
-    #     vetores_reduzidos = pca.fit_transform(todos_vetores)
-
-    #     vet_trilhas_red = vetores_reduzidos[:-1]
-    #     vet_usuario_red = vetores_reduzidos[-1]
-
-    #     nomes_trilhas = [trilha.nome for trilha in trilhas]
-    #     if vetores_reduzidos.shape[1] >= 2:
-    #         visualizar_matriz_pca(vetores_reduzidos, nomes_trilhas)
-    #     else:
-    #         print("⚠️ Vetores PCA têm menos de 2 dimensões. Pulando visualização 2D.")
-
-
 
     max_componentes = min(todos_vetores.shape[0], todos_vetores.shape[1])
     n_comp = max(2, min(n_componentes_pca, max_componentes))
@@ -182,26 +162,13 @@ def recomendar_trilha(conteudos_usuario, nivel_conhecimento=None, objetivo="",
     vet_trilhas_red = vetores_reduzidos[:-1]
     vet_usuario_red = vetores_reduzidos[-1]
 
-    # nomes_trilhas = [trilha.nome for trilha in trilhas]
-    # visualizar_matriz_pca(vetores_reduzidos, nomes_trilhas)
-
-    # nomesTrilhas = [trilha.nome for trilha in trilhas]
-    # nomesTrilhas = nomesTrilhas + ["Usuário"]
-    # visualizar_matriz_pca_semPersonalizar(vetores_reduzidos , nomesTrilhas)
-
     sims = cosine_similarity([vet_usuario_red], vet_trilhas_red)[0]
     resultados = list(zip(trilhas, sims))
 
     similares = [(t, s) for (t, s) in resultados if s >= limiar_similaridade]
-    if not similares:
-        similares = sorted(resultados, key=lambda x: x[1], reverse=True)[:10]
+    # if not similares:
+    similares = sorted(resultados, key=lambda x: x[1], reverse=True)[:10]
     
-    # nomesTrilhas_similares = [tri for (tri, sim) in similares]
-    # valoresTrilhas_similares = [sim for (trin, sim) in similares]
-
-    # visualizar_matriz_similaridade(nomesTrilhas_similares, valoresTrilhas_similares)
-    # visualizar_similaridade_barras(nomesTrilhas_similares, valoresTrilhas_similares)
-
     # === Regra de negócio: retorna só UMA trilha ===
     if nivel_conhecimento:
         def normalizar_nivel(v):
@@ -218,16 +185,21 @@ def recomendar_trilha(conteudos_usuario, nivel_conhecimento=None, objetivo="",
         niveis_norm = {c.lower(): normalizar_nivel(v) for c, v in nivel_conhecimento.items()}
         print("niveis normalizados: ", niveis_norm.get)
         conteudo_menor = min(niveis_norm, key=niveis_norm.get)
-        palavra_chave = conteudo_menor.split()[-1].lower()
+        # palavra_chave = conteudo_menor.split()[-1].lower()
+        palavra_chave = conteudo_menor.lower()
 
         print("\n=== DEBUG RERANKING ===")
         print("Conteúdo de menor conhecimento:", conteudo_menor)
         print("Palavra-chave usada para busca:", palavra_chave)
 
         com_menor = [
-            (t, s) for (t, s) in similares 
+            (t, s) for (t, s) in similares
             if palavra_chave in (t.nome.lower() + " " + (t.descricao or "").lower())
         ]
+
+        for t, s in similares:
+            texto = (t.nome.lower() + " " + (t.descricao or "").lower())
+            print(f"Comparando '{palavra_chave}' com: {texto}")
 
         if com_menor:
             # 🔑 pega só a trilha mais similar do menor conhecimento
