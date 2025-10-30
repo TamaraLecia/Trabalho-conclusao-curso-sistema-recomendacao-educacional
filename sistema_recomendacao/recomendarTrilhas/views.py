@@ -63,7 +63,7 @@ def responderQuestionario(request):
             
             trilha_id = request.POST.get("trilha_id")
             if trilha_id:
-                usuario = get_object_or_404(UsuarioComun, user=request.user)
+                usuario = get_object_or_404(UsuarioComun, user=request.user.id)
                 trilha = get_object_or_404(Trilha, id=trilha_id)
                 usuario.trilhaUser.add(trilha)
                 return redirect("minhasTrilhas")
@@ -369,7 +369,7 @@ def concluir_capitulo(request, capitulo_id):
     })
 
 def nova_recomendacao(request, trilha_id):
-    usuario = get_object_or_404(UsuarioComun, user=request.user)
+    usuario = get_object_or_404(UsuarioComun, user=request.user.id)
     trilha_concluida = get_object_or_404(Trilha, id=trilha_id)
 
     # Verifica se o usuário concluiu todos os capítulos da trilha
