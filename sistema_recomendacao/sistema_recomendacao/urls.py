@@ -18,10 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 from Sistema import views
 
+
 urlpatterns = [
     # Honeypot no /admin/ (falso) para não conseguir acessar o real
-    path("admin/", include("admin_honeypot.urls", namespace="admin_honeypot")),
-
+    # path("admin/", include("admin_honeypot.urls", namespace="admin_honeypot")),
+    path("admin/", views.honeypot_fake, name="honeypot_fake"),
     path('gerenteAdministrador/', admin.site.urls),
     path('', include('Sistema.urls')), # rota do app de Sistema
     path('recomendarTrilhas/', include('recomendarTrilhas.urls')),

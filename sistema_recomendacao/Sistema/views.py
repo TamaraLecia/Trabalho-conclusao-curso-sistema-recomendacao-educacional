@@ -4,10 +4,19 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import HttpResponseForbidden
 
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
+
+# from django.http import HttpResponseForbidden
+
+def honeypot_fake(request):
+    # Aqui você pode logar o IP, user-agent etc.
+    return HttpResponseForbidden("Acesso negado.")
+
+
 
 # def teste2(request):
 #     return render(request, 'index.html')
