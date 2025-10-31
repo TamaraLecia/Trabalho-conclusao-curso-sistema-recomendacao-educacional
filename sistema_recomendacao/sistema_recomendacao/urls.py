@@ -19,7 +19,7 @@ from django.urls import path, include
 from Sistema import views
 
 urlpatterns = [
-    # Honeypot no /admin/ (falso)
+    # Honeypot no /admin/ (falso) para não conseguir acessar o real
     path("admin/", include("admin_honeypot.urls", namespace="admin_honeypot")),
 
     path('gerenteAdministrador/', admin.site.urls),
