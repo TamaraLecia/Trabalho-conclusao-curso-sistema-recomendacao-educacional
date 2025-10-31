@@ -19,8 +19,11 @@ from django.urls import path, include
 from Sistema import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-     path('', include('Sistema.urls')), # rota do app de Sistema
+    # Honeypot no /admin/ (falso)
+    path("admin/", include("admin_honeypot.urls", namespace="admin_honeypot")),
+
+    path('gerenteAdministrador/', admin.site.urls),
+    path('', include('Sistema.urls')), # rota do app de Sistema
     path('recomendarTrilhas/', include('recomendarTrilhas.urls')),
     path('administrador/', include('administrador.urls')),
     path('usuarioComun/', include('usuarioComun.urls')),

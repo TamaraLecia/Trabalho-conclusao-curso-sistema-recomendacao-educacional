@@ -39,7 +39,7 @@ else:
     YOUTUBE_API_KEY = None
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # utilização no deploy para aceitar requisições todos os domínios
 ALLOWED_HOSTS = ["*"]
@@ -48,6 +48,8 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    # apps do admin falso
+    "admin_honeypot",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
