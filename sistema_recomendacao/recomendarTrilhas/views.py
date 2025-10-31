@@ -14,7 +14,7 @@ from django.db.models import Sum
 
 from .forms import TrilhaForm, TopicoFormSet, CapituloFormSet, TopicoForm, CapituloForm
 from .models import Topico, Trilha, Capitulo, ProgressoCapitulo
-from usuarioComun.models import UsuarioComun
+from usuarioComun.models import UsuarioComun, NivelConhecimento
 
 DATA_PATH = os.path.join(settings.BASE_DIR, 'recomendarTrilhas', 'data', 'tecnologiasPergunta1.csv')
 
@@ -54,6 +54,14 @@ def responderQuestionario(request):
                 if key.startswith("nivel_"):
                     conteudoConhecimento = key.replace("nivel_", "")
                     nivel_conhecimento[conteudoConhecimento] = int(value)
+
+            usuario = get_object_or_404(UsuarioComun, user=request.user)
+            for conteudo, nivel in nivel_conhecimento.items():
+                NivelConhecimento.objects.update_or_create(
+                    usuario=usuario,
+                    conteudo=conteudo,
+                    defaults={"nivel": nivel}
+                )
 
             conteudos_recomendados = recomendar_trilha(
                 conteudos_usuario=conteudos_selecionados,
@@ -284,6 +292,31 @@ def deletarTrilha(request, trilha_id):
 def ver_capitulo(request, capitulo_id):
     capitulo = get_object_or_404(Capitulo, id=capitulo_id)
     usuario = request.user.usuariocomun
+
+    # pega nível de conhecimento do usuário para liberar os capítulos da trilha
+    try:
+        nivel_objeto = NivelConhecimento.objects.get(usuario=usuario, conteudo__iexact=capitulo.topico.trilha.nome)
+        nivel = nivel_objeto
+    except NivelConhecimento.DoesNotExist:
+        nivel = 0
+    
+    # regra de desbloqueio por conhecimento
+    if nivel >= 80:
+        # libera os 3 primeiros capítulos
+        liberados = [c.id for c in capitulo.topico.capitulos.all()[:3]]
+        if capitulo.id in liberados:
+            return render(request, "recomendarTrilhas/capitulo.html", {
+                "capitulo": capitulo,
+                "bloqueado": False
+            })
+        elif nivel >= 50:
+            # libera só o primeiro capítulo do tópico
+            primeiro = capitulo.topico.capitulos.first()
+            if capitulo.id == primeiro.id:
+                return render(request, "recomendarTrilhas/capitulo.html", {
+                    "capitulo": capitulo,
+                    "bloqueado": False
+                })
 
     # pega todos os tópicos da trilha do capítulo
     topicos = capitulo.topico.trilha.topicos.all().order_by("id")

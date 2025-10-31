@@ -11,3 +11,11 @@ class UsuarioComun(models.Model):
 
     def __str__(self):
         return self.nome
+    
+class NivelConhecimento(models.Model):
+    usuario = models.ForeignKey("UsuarioComun", on_delete=models.CASCADE)
+    conteudo = models.CharField(max_length=100)
+    nivel = models.IntegerField() # 0  a 100
+
+    def __str__(self):
+        return f"{self.usuario} - {self.conteudo}: {self.nivel}%"
