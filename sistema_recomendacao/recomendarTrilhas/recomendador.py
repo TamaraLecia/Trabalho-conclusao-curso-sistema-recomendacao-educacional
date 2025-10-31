@@ -205,14 +205,42 @@ def recomendar_trilha(conteudos_usuario, nivel_conhecimento=None, objetivo="",
             # 🔑 pega só a trilha mais similar do menor conhecimento
             trilha_escolhida = max(com_menor, key=lambda x: x[1])[0]
             print("Trilha escolhida (menor conhecimento):", trilha_escolhida.nome)
-            return [trilha_escolhida]
+            # return [trilha_escolhida]
         else:
             print("⚠️ Nenhuma trilha encontrada para o menor conhecimento, usando fallback.")
 
     # fallback: retorna só a trilha mais similar de todas
     trilha_escolhida = max(similares, key=lambda x: x[1])[0]
     print("Trilha escolhida (fallback):", trilha_escolhida.nome)
-    return [trilha_escolhida]
+    # return [trilha_escolhida]
+
+    # liberação de capítulos com base no nível de conhecimento do usuário
+    capitulos_liberados = []
+    if nivel_conhecimento:
+        for conteudo, nivel in nivel_conhecimento.items():
+            try:
+                nivel_valor = float(nivel)
+            except:
+                continue
+
+            if nivel_valor >= 80:
+                # libera só os 3 primeiros capítulos do primeiro tópico
+                primeiroTopico = trilha_escolhida.topicos.order_by("id").first()
+                if primeiroTopico:
+                    capitulos = primeiroTopico.capitulos.order_by("id")[:3]
+                    capitulos_liberados.extend([c.id for c in capitulos])
+            
+            elif nivel_valor >= 50:
+                # libera só o primeiro capítulo do primeiro tópico
+                primeiro_topico = trilha_escolhida.topicos.order_by("id").first()
+                if primeiro_topico:
+                    cap = primeiro_topico.capitulos.order_by("id").first()
+                    if cap:
+                        capitulos_liberados.append(cap.id)
+    return[{
+        "trilha": trilha_escolhida,
+        "capitulos_liberados": list(set(capitulos_liberados))
+    }]
 
 
 def recomendar_proxima_trilha(trilha_concluida, usuario=None, n_recomendacoes=3, limiar_similaridade= 0.50):

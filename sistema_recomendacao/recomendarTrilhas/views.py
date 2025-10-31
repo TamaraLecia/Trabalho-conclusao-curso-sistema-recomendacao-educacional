@@ -55,26 +55,76 @@ def responderQuestionario(request):
                     conteudoConhecimento = key.replace("nivel_", "")
                     nivel_conhecimento[conteudoConhecimento] = int(value)
 
-            usuario = get_object_or_404(UsuarioComun, user=request.user)
-            for conteudo, nivel in nivel_conhecimento.items():
-                NivelConhecimento.objects.update_or_create(
-                    usuario=usuario,
-                    conteudo=conteudo,
-                    defaults={"nivel": nivel}
-                )
-
             conteudos_recomendados = recomendar_trilha(
                 conteudos_usuario=conteudos_selecionados,
                 nivel_conhecimento=nivel_conhecimento,
                 objetivo=objetivo
             )
+
+            usuario = get_object_or_404(UsuarioComun, user=request.user)
+
+            # salva níveis de conhecimento no barco
+            for conteudo, nivel in nivel_conhecimento.items():
+                NivelConhecimento.objects.update_or_create(
+                    usuario=usuario,
+                    conteudo = conteudo,
+                    defaults={"nivel": nivel}
+                )
+
+            # marca capítulos liberados como concluidos
+            for trilhaRecomendada in conteudos_recomendados:
+                for cap_id in trilhaRecomendada["capitulos_liberados"]:
+                    cap = Capitulo.objects.get(id=cap_id)
+                    ProgressoCapitulo.objects.update_or_create(
+                        usuario=usuario,
+                        capitulo=cap,
+                        defaults={"concluido": True}
+                    )
             
+            # se o usuário clicar no botão "Acessar trilha"
             trilha_id = request.POST.get("trilha_id")
             if trilha_id:
-                usuario = get_object_or_404(UsuarioComun, user=request.user.id)
                 trilha = get_object_or_404(Trilha, id=trilha_id)
                 usuario.trilhaUser.add(trilha)
                 return redirect("minhasTrilhas")
+
+
+            # for trilhaRecomendada in conteudos_recomendados:
+            #     # trilha = trilhaRecomendada["trilha"]
+
+            #     # adiciona a trilha ao usuário
+            #     # usuario.trilhaUser.add(trilha)
+
+            #     trilha_id = request.POST.get("trilha_id")
+            #     if trilha_id:
+            #         usuario = get_object_or_404(UsuarioComun, user=request.user.id)
+            #         trilha = get_object_or_404(Trilha, id=trilha_id)
+            #         usuario.trilhaUser.add(trilha)
+            #         for cap_id in trilhaRecomendada["capitulos_liberados"]:
+            #             cap =  Capitulo.objects.get(id=cap_id)
+            #             ProgressoCapitulo.objects.update_or_create(
+            #                 usuario=usuario,
+            #                 capitulo=cap,
+            #                 defaults={"concluido": True}
+            #             )
+            #         return redirect("minhasTrilhas")
+
+                # for cap_id in trilhaRecomendada["capitulos_liberados"]:
+                #     cap =  Capitulo.objects.get(id=cap_id)
+                #     ProgressoCapitulo.objects.update_or_create(
+                #         usuario=usuario,
+                #         capitulo=cap,
+                #         defaults={"concluido": True}
+                #     )
+                
+            # return redirect("minhasTrilhas")
+            
+            # trilha_id = request.POST.get("trilha_id")
+            # if trilha_id:
+            #     usuario = get_object_or_404(UsuarioComun, user=request.user.id)
+            #     trilha = get_object_or_404(Trilha, id=trilha_id)
+            #     usuario.trilhaUser.add(trilha)
+            #     return redirect("minhasTrilhas")
 
     return render(request, "recomendarTrilhas/questionario.html", {
         "inicio": inicio,
@@ -293,30 +343,30 @@ def ver_capitulo(request, capitulo_id):
     capitulo = get_object_or_404(Capitulo, id=capitulo_id)
     usuario = request.user.usuariocomun
 
-    # pega nível de conhecimento do usuário para liberar os capítulos da trilha
-    try:
-        nivel_objeto = NivelConhecimento.objects.get(usuario=usuario, conteudo__iexact=capitulo.topico.trilha.nome)
-        nivel = nivel_objeto
-    except NivelConhecimento.DoesNotExist:
-        nivel = 0
+    # # pega nível de conhecimento do usuário para liberar os capítulos da trilha
+    # try:
+    #     nivel_objeto = NivelConhecimento.objects.get(usuario=usuario, conteudo__iexact=capitulo.topico.trilha.nome)
+    #     nivel = nivel_objeto
+    # except NivelConhecimento.DoesNotExist:
+    #     nivel = 0
     
-    # regra de desbloqueio por conhecimento
-    if nivel >= 80:
-        # libera os 3 primeiros capítulos
-        liberados = [c.id for c in capitulo.topico.capitulos.all()[:3]]
-        if capitulo.id in liberados:
-            return render(request, "recomendarTrilhas/capitulo.html", {
-                "capitulo": capitulo,
-                "bloqueado": False
-            })
-        elif nivel >= 50:
-            # libera só o primeiro capítulo do tópico
-            primeiro = capitulo.topico.capitulos.first()
-            if capitulo.id == primeiro.id:
-                return render(request, "recomendarTrilhas/capitulo.html", {
-                    "capitulo": capitulo,
-                    "bloqueado": False
-                })
+    # # regra de desbloqueio por conhecimento
+    # if nivel >= 80:
+    #     # libera os 3 primeiros capítulos
+    #     liberados = [c.id for c in capitulo.topico.capitulos.all()[:3]]
+    #     if capitulo.id in liberados:
+    #         return render(request, "recomendarTrilhas/capitulo.html", {
+    #             "capitulo": capitulo,
+    #             "bloqueado": False
+    #         })
+    #     elif nivel >= 50:
+    #         # libera só o primeiro capítulo do tópico
+    #         primeiro = capitulo.topico.capitulos.first()
+    #         if capitulo.id == primeiro.id:
+    #             return render(request, "recomendarTrilhas/capitulo.html", {
+    #                 "capitulo": capitulo,
+    #                 "bloqueado": False
+    #             })
 
     # pega todos os tópicos da trilha do capítulo
     topicos = capitulo.topico.trilha.topicos.all().order_by("id")

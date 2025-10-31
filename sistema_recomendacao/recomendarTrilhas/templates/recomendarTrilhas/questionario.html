@@ -31,7 +31,8 @@
   {% elif inicio == 2 %}
   <!-- Pergunta 2 -->
   <div class="form-section form-bg-suave p-4 rounded shadow-sm">
-    <h3><i class="bi bi-bar-chart me-2 text-primary"></i> 2. Como você avalia o seu nível de conhecimento nesse(s) conteúdo(s)?</h3>
+    <h3><i class="bi bi-bar-chart me-2 text-primary"></i> 2. Como você avalia o seu nível de conhecimento nesse(s)
+      conteúdo(s)?</h3>
     {% for conteudo in conteudos_selecionados %}
     <div class="mb-4">
       <label class="form-label">{{ conteudo }}</label>
@@ -40,9 +41,8 @@
           <small>0</small>
           <small>100</small>
         </div>
-        <input type="range" class="form-range custom-slider w-100"
-               name="nivel_{{ conteudo }}" min="0" max="100" step="1" value="0"
-               oninput="this.nextElementSibling.innerText = this.value + '%'">
+        <input type="range" class="form-range custom-slider w-100" name="nivel_{{ conteudo }}" min="0" max="100"
+          step="1" value="0" oninput="this.nextElementSibling.innerText = this.value + '%'">
         <div class="slider-bubble"></div>
       </div>
     </div>
@@ -59,7 +59,8 @@
   {% elif inicio == 3 %}
   <!-- Pergunta 3 -->
   <div class="form-section form-bg-suave p-4 rounded shadow-sm">
-    <h3><i class="bi bi-pencil-square me-2 text-primary"></i> 3. Qual o seu objetivo ao estudar este(s) conteúdo(s)?</h3>
+    <h3><i class="bi bi-pencil-square me-2 text-primary"></i> 3. Qual o seu objetivo ao estudar este(s) conteúdo(s)?
+    </h3>
     <div class="mb-4">
       <textarea name="objetivo" class="form-control" rows="6" placeholder="Descreva seu objetivo" required></textarea>
     </div>
@@ -73,7 +74,8 @@
 
     <div id="erro3" class="mt-2"></div>
     <div class="text-end mt-3">
-      <button id="btn-gerar" class="btn btn-primary rounded" type="submit" onclick="this.form.inicio.value=4">Gerar recomendação</button>
+      <button id="btn-gerar" class="btn btn-primary rounded" type="submit" onclick="this.form.inicio.value=4">Gerar
+        recomendação</button>
     </div>
   </div>
 </form>
@@ -85,17 +87,24 @@
 
   {% if conteudos_recomendados %}
   <div class="row">
-    {% for trilha in conteudos_recomendados %}
+    {% for rec in conteudos_recomendados %}
     <div class="col-12 col-md-6 col-lg-4 mb-4">
       <form action="{% url 'questionario' %}" method="post" class="h-100">
         {% csrf_token %}
         <input type="hidden" name="inicio" value="4">
-        <input type="hidden" name="trilha_id" value="{{ trilha.id }}">
+        <input type="hidden" name="trilha_id" value="{{ rec.trilha.id }}">
         <div class="card h-100 border border-primary">
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ trilha.nome }}</h5>
-            <p class="card-text flex-grow-1">{{ trilha.descricao }}</p>
-            <p class="card-text flex-grow-1"><strong>Salve esta trilha clicando no botão abaixo. Assim, você poderá acessá-la quando quiser.</strong></p>
+            <h5 class="card-title">
+              {{ rec.trilha.nome }}
+            </h5>
+            <p class="card-text flex-grow-1">{{ rec.trilha.descricao }}</p>
+            {% if rec.capitulos_liberados %}
+              <span class="badge bg-success ms-2">{{ rec.capitulos_liberados|length }} capítulo(s) já foram liberado(s) pelo seu nível de <br> conhecimento</span>
+            {% endif %}
+            <br>
+            <p class="card-text flex-grow-1"><strong>Salve esta trilha clicando no botão abaixo. Assim, você poderá
+                acessá-la quando quiser.</strong></p>
             <button type="submit" class="btn btn-primary mt-auto">Clique para acessar a trilha</button>
           </div>
         </div>
@@ -112,7 +121,7 @@
 <!-- Preloader -->
 <div id="preloader" class="d-none position-fixed top-0 start-0 w-100 h-100 
             bg-white bg-opacity-75 d-flex flex-column justify-content-center align-items-center"
-     style="z-index: 1050;">
+  style="z-index: 1050;">
   <div class="d-flex gap-2 mb-3">
     <div class="dot bg-primary rounded-circle"></div>
     <div class="dot bg-primary rounded-circle"></div>
@@ -125,7 +134,7 @@
 <script src="{% static 'JavaScript/script.js' %}"></script>
 <!-- Validaçoes das perguntas -->
 <script>
-  document.getElementById("questionarioForm").addEventListener("submit", function(e) {
+  document.getElementById("questionarioForm").addEventListener("submit", function (e) {
     const inicio = this.inicio.value;
 
     // Limpa mensagens anteriores
@@ -134,21 +143,21 @@
     let errorDiv = null;
 
     // Validação da Pergunta 1
-    if(inicio == "2"){
+    if (inicio == "2") {
       const checkboxes = document.querySelectorAll('input[name="Conteudo"]');
       const algumMarcado = Array.from(checkboxes).some(cb => cb.checked);
-      if(!algumMarcado){
+      if (!algumMarcado) {
         e.preventDefault();
-        document.getElementById("erro1").innerHTML = 
+        document.getElementById("erro1").innerHTML =
           '<div class="alert alert-danger p-2 mt-2"> ⚠️ Selecione pelo menos um conteúdo antes de continuar.</div>'
       }
     }
 
-    if (inicio == "3"){
+    if (inicio == "3") {
       const sliders = document.querySelectorAll('input[type="range"]');
       let todosZero = true;
       sliders.forEach(slider => {
-        if (parseInt(slider.value) >= 0){
+        if (parseInt(slider.value) >= 0) {
           todosZero = false;
         }
       });
@@ -162,8 +171,8 @@
     // Pergunta 3 já tem required no textarea → o navegador mostra a mensagem padrão
 
     // Se houve erro, rola até ele
-    if(errorDiv){
-      errorDiv.scrollIntoView({behavior: "smooth", block: "center"});
+    if (errorDiv) {
+      errorDiv.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
   });
