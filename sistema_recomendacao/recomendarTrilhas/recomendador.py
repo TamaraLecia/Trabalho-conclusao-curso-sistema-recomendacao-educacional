@@ -135,10 +135,6 @@ def recomendar_trilha(conteudos_usuario, nivel_conhecimento=None, objetivo="",
     vetor_usuario = model.infer_vector(tokens_input)
 
     trilhas_db = Trilha.objects.all()
-    print("=== TRILHAS DISPONÍVEIS NO BANCO ===")
-    for t in trilhas_db:
-        print("-", t.id, t.nome)
-
     trilhas, vetores_trilhas, tokens_trilhas_cache = [], [], {}
 
     for trilha in trilhas_db:
@@ -153,7 +149,6 @@ def recomendar_trilha(conteudos_usuario, nivel_conhecimento=None, objetivo="",
     
     # === PCA + Similaridade ===
     todos_vetores = np.array(vetores_trilhas + [vetor_usuario])
-
     max_componentes = min(todos_vetores.shape[0], todos_vetores.shape[1])
     n_comp = max(2, min(n_componentes_pca, max_componentes))
 
@@ -164,83 +159,83 @@ def recomendar_trilha(conteudos_usuario, nivel_conhecimento=None, objetivo="",
 
     sims = cosine_similarity([vet_usuario_red], vet_trilhas_red)[0]
     resultados = list(zip(trilhas, sims))
-
-    similares = [(t, s) for (t, s) in resultados if s >= limiar_similaridade]
-    # if not similares:
     similares = sorted(resultados, key=lambda x: x[1], reverse=True)[:10]
-    
-    # === Regra de negócio: retorna só UMA trilha ===
+
+    # === Escolha da trilha ===
+    trilha_escolhida = None
     if nivel_conhecimento:
         def normalizar_nivel(v):
             mapa = {"baixo": 0.1, "médio": 0.5, "medio": 0.5, "alto": 0.9}
             if isinstance(v, str) and v.lower() in mapa:
                 return mapa[v.lower()]
             try:
-                print("entrou a aqui")
                 return float(v) / 100.0
             except:
-                print("Entrou no 0.5")
                 return 0.5
 
         niveis_norm = {c.lower(): normalizar_nivel(v) for c, v in nivel_conhecimento.items()}
-        print("niveis normalizados: ", niveis_norm.get)
         conteudo_menor = min(niveis_norm, key=niveis_norm.get)
-        # palavra_chave = conteudo_menor.split()[-1].lower()
         palavra_chave = conteudo_menor.lower()
-
-        print("\n=== DEBUG RERANKING ===")
-        print("Conteúdo de menor conhecimento:", conteudo_menor)
-        print("Palavra-chave usada para busca:", palavra_chave)
 
         com_menor = [
             (t, s) for (t, s) in similares
             if palavra_chave in (t.nome.lower() + " " + (t.descricao or "").lower())
         ]
 
-        for t, s in similares:
-            texto = (t.nome.lower() + " " + (t.descricao or "").lower())
-            print(f"Comparando '{palavra_chave}' com: {texto}")
-
         if com_menor:
-            # 🔑 pega só a trilha mais similar do menor conhecimento
             trilha_escolhida = max(com_menor, key=lambda x: x[1])[0]
-            print("Trilha escolhida (menor conhecimento):", trilha_escolhida.nome)
-            # return [trilha_escolhida]
-        else:
-            print("⚠️ Nenhuma trilha encontrada para o menor conhecimento, usando fallback.")
 
-    # fallback: retorna só a trilha mais similar de todas
-    trilha_escolhida = max(similares, key=lambda x: x[1])[0]
-    print("Trilha escolhida (fallback):", trilha_escolhida.nome)
-    # return [trilha_escolhida]
+    # fallback se não encontrou nada pelo menor conhecimento
+    if not trilha_escolhida:
+        trilha_escolhida = max(similares, key=lambda x: x[1])[0]
 
-    # liberação de capítulos com base no nível de conhecimento do usuário
+    # === Liberação de capítulos com base no MENOR nível ===
     capitulos_liberados = []
     if nivel_conhecimento:
-        for conteudo, nivel in nivel_conhecimento.items():
+        niveis = []
+        for n in nivel_conhecimento.values():
             try:
-                nivel_valor = float(nivel)
-            except:
+                niveis.append(float(n))
+            except (TypeError, ValueError):
                 continue
 
+        if niveis:
+            nivel_valor = min(niveis)  # 🔑 usa o menor nível
+
             if nivel_valor >= 80:
-                # libera só os 3 primeiros capítulos do primeiro tópico
-                primeiroTopico = trilha_escolhida.topicos.order_by("id").first()
-                if primeiroTopico:
-                    capitulos = primeiroTopico.capitulos.order_by("id")[:3]
+                primeiro_topico = trilha_escolhida.topicos.order_by("id").first()
+                if primeiro_topico:
+                    capitulos = primeiro_topico.capitulos.order_by("id")[:3]
                     capitulos_liberados.extend([c.id for c in capitulos])
-            
+
             elif nivel_valor >= 50:
-                # libera só o primeiro capítulo do primeiro tópico
                 primeiro_topico = trilha_escolhida.topicos.order_by("id").first()
                 if primeiro_topico:
                     cap = primeiro_topico.capitulos.order_by("id").first()
                     if cap:
                         capitulos_liberados.append(cap.id)
-    return[{
+
+            elif nivel_valor < 50:
+                # não libera nada
+                pass
+
+    return [{
         "trilha": trilha_escolhida,
         "capitulos_liberados": list(set(capitulos_liberados))
     }]
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def recomendar_proxima_trilha(trilha_concluida, usuario=None, n_recomendacoes=3, limiar_similaridade= 0.50):

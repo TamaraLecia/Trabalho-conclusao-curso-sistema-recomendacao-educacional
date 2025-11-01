@@ -39,7 +39,7 @@ else:
     YOUTUBE_API_KEY = None
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # utilização no deploy para aceitar requisições todos os domínios
 ALLOWED_HOSTS = ["*"]
