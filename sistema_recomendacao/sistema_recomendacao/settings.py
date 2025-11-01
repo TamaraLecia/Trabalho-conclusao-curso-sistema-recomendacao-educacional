@@ -39,7 +39,8 @@ else:
     YOUTUBE_API_KEY = None
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# mudei o DEBUG para False para não mostrar minhas urls quando houvesse algum erro com o sistema em produção
+DEBUG = False
 
 # utilização no deploy para aceitar requisições todos os domínios
 ALLOWED_HOSTS = ["*"]
