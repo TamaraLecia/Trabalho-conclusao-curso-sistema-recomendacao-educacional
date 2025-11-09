@@ -9,12 +9,13 @@ from django.forms import inlineformset_factory
 from django.http import JsonResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse
-from django.db.models import Sum
 
 
 from .forms import TrilhaForm, TopicoFormSet, CapituloFormSet, TopicoForm, CapituloForm
-from .models import Topico, Trilha, Capitulo, ProgressoCapitulo
+from .models import Topico, Trilha, Capitulo, ProgressoCapitulo, SessaoCapitulo
 from usuarioComun.models import UsuarioComun, NivelConhecimento
+from django.db.models import Sum
+
 
 DATA_PATH = os.path.join(settings.BASE_DIR, 'recomendarTrilhas', 'data', 'tecnologiasPergunta1.csv')
 
@@ -70,16 +71,6 @@ def responderQuestionario(request):
                     conteudo = conteudo,
                     defaults={"nivel": nivel}
                 )
-
-            # marca capítulos liberados como concluidos
-            for trilhaRecomendada in conteudos_recomendados:
-                for cap_id in trilhaRecomendada["capitulos_liberados"]:
-                    cap = Capitulo.objects.get(id=cap_id)
-                    ProgressoCapitulo.objects.update_or_create(
-                        usuario=usuario,
-                        capitulo=cap,
-                        defaults={"concluido": True}
-                    )
             
             # se o usuário clicar no botão "Acessar trilha"
             trilha_id = request.POST.get("trilha_id")
@@ -413,8 +404,23 @@ def concluir_capitulo(request, capitulo_id):
         duracao = float(data.get("duracao", 1))
     except Exception:
         tempo_assistido, duracao = 0, 1
+        
+    # Registra esta sessão no banco
+    SessaoCapitulo.objects.create(usuario=usuario, capitulo=capitulo, tempo_assistido=int(tempo_assistido))
+
+    # Somar todas as sessões anteriores
+    total_assistido = SessaoCapitulo.objects.filter(usuario=usuario, capitulo=capitulo).aggregate(total=Sum("tempo_assistido"))["total"] or 0
     
-    percentual = (tempo_assistido / duracao) * 100 if duracao > 0 else 0
+    percentual = (total_assistido / duracao) * 100 if duracao > 0 else 0
+
+    print("=== DEBUG CONCLUIR CAPÍTULO ===")
+    print("Capítulo:", capitulo.id)
+    print("Usuário:", usuario.id)
+    print("Tempo assistido (total):", total_assistido)
+    print("Duração do vídeo (segundos):", duracao)
+    print("Percentual assistido:", percentual)
+    print("================================")
+
 
     progresso, _ = ProgressoCapitulo.objects.get_or_create(
         usuario=usuario,
@@ -424,7 +430,7 @@ def concluir_capitulo(request, capitulo_id):
     if percentual >= 90:
         progresso.concluido = True
         progresso.pontuacao = 10
-    elif percentual >= 50:
+    elif 50 <= percentual < 90:
         progresso.concluido = True
         progresso.pontuacao = 5
     else:
@@ -450,6 +456,19 @@ def concluir_capitulo(request, capitulo_id):
         "status": "ok",
         "redirect_url": reverse("verTrilhaCaminho", args=[trilha.id])
     })
+
+# refistra as sessões sem concluir o capítulo
+def registrar_sessao(request, capitulo_id):
+    if request.method == "POST":
+        usuario = request.user.usuariocomun
+        capitulo = get_object_or_404(Capitulo, id=capitulo_id)
+        data = json.loads(request.body)
+        tempo_assistindo = int(data.get("tempo_assistido", 0))
+
+        SessaoCapitulo.objects.create(usuario=usuario, capitulo=capitulo, tempo_assistindo=tempo_assistindo)
+
+        return JsonResponse({"status": "ok"})
+
 
 def nova_recomendacao(request, trilha_id):
     usuario = get_object_or_404(UsuarioComun, user=request.user.id)

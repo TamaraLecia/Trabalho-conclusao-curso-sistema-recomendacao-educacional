@@ -3,12 +3,6 @@ import numpy as np
 import pandas as pd
 import nltk
 
-# utilizada na geração do gráficos
-
-# from matplotlib.patches import Rectangle
-# # utilizado para ajusta o texto no gráfico de dispersão
-# from adjustText import adjust_text
-
 from django.conf import settings
 from recomendarTrilhas.models import Trilha, ProgressoCapitulo, Capitulo
 
@@ -189,55 +183,11 @@ def recomendar_trilha(conteudos_usuario, nivel_conhecimento=None, objetivo="",
     if not trilha_escolhida:
         trilha_escolhida = max(similares, key=lambda x: x[1])[0]
 
-    # === Liberação de capítulos com base no MENOR nível ===
-    capitulos_liberados = []
-    if nivel_conhecimento:
-        niveis = []
-        for n in nivel_conhecimento.values():
-            try:
-                niveis.append(float(n))
-            except (TypeError, ValueError):
-                continue
-
-        if niveis:
-            nivel_valor = min(niveis)  # 🔑 usa o menor nível
-
-            if nivel_valor >= 80:
-                primeiro_topico = trilha_escolhida.topicos.order_by("id").first()
-                if primeiro_topico:
-                    capitulos = primeiro_topico.capitulos.order_by("id")[:3]
-                    capitulos_liberados.extend([c.id for c in capitulos])
-
-            elif nivel_valor >= 50:
-                primeiro_topico = trilha_escolhida.topicos.order_by("id").first()
-                if primeiro_topico:
-                    cap = primeiro_topico.capitulos.order_by("id").first()
-                    if cap:
-                        capitulos_liberados.append(cap.id)
-
-            elif nivel_valor < 50:
-                # não libera nada
-                pass
-
     return [{
         "trilha": trilha_escolhida,
-        "capitulos_liberados": list(set(capitulos_liberados))
     }]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# recomendação da próxima trilha sugerida pelo o sistema
 def recomendar_proxima_trilha(trilha_concluida, usuario=None, n_recomendacoes=3, limiar_similaridade= 0.50):
     model = Doc2Vec.load(MODEL_PATH)
 

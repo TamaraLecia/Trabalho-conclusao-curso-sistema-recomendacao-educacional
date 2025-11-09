@@ -99,10 +99,6 @@
               {{ rec.trilha.nome }}
             </h5>
             <p class="card-text flex-grow-1">{{ rec.trilha.descricao }}</p>
-            {% if rec.capitulos_liberados %}
-              <span class="badge bg-success ms-2">{{ rec.capitulos_liberados|length }} capítulo(s) já foram liberado(s) pelo seu nível de <br> conhecimento</span>
-            {% endif %}
-            <br>
             <p class="card-text flex-grow-1"><strong>Salve esta trilha clicando no botão abaixo. Assim, você poderá
                 acessá-la quando quiser.</strong></p>
             <button type="submit" class="btn btn-primary mt-auto">Clique para acessar a trilha</button>

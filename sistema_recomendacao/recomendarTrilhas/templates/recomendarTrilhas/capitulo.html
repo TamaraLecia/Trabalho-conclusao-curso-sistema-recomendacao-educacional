@@ -85,10 +85,20 @@
       // Quando o modal fecha, calcula tempo
       videoModal.addEventListener('hidden.bs.modal', () => {
         clearInterval(intervalo);
+        if(inicio){
+          const tempoAtual = Math.floor((Date.now() - inicio) / 1000);
+          tempoAssistido += tempoAtual;
+          inicio = null;
+        }
       });
 
       // Ao clicar em conclur
       btnConcluir.addEventListener("click", () => {
+        // 🔍 LOGS PARA DEPURAÇÃO
+        console.log("Tempo assistido (segundos):", tempoAssistido);
+        console.log("Duração do vídeo (segundos):", duracaoVideo);
+        console.log("Percentual assistido:", (tempoAssistido / duracaoVideo) * 100);
+
         if(duracaoVideo > 0 && tempoAssistido < duracaoVideo / 2){
           alert("Você ainda não assistiu pelo menos metade do vídeo.");
           return;
@@ -107,48 +117,15 @@
         }).then(response => response.json())
           .then(data => {
             if (data.redirect_url){
+              // Limpa o tempo salvo localmente
+              localStorage.removeItem("tempoAssistido_{{ capitulo.id }}");
+
+              // Redireciona o usuário
               window.location.href = data.redirect_url;
             }
           });
       });
 
-      // // Quando o modal abre, começa a contar
-      // // const videoModal = document.getElementById('videoModal');
-      // videoModal.addEventListener('shown.bs.modal', () => {
-      //   inicio = Date.now();
-      //   intervalo = setInterval(() =>{
-      //     tempoAssistido = Math.floor((Date.now() - inicio) / 1000);
-
-      //     if (duracaoVideo > 0 && tempoAssistido >= duracaoVideo / 2){
-      //       btnConcluir.disabled = false; // habilita o botão
-      //     }
-      //   }, 1000)
-      // });
-
-      // // Quando o modal fecha, calcula tempo
-      // videoModal.addEventListener('hidden.bs.modal', () => {
-      //   clearInterval(intervalo);
-      // });
-
-      // // Ao clicar em concluir
-      // btnConcluir.addEventListener("click", () => {
-      //   fetch("{% url 'concluir_capitulo' capitulo.id %}", {
-      //     method: "POST",
-      //     headers: {
-      //       "X-CSRFToken": "{{ csrf_token }}",
-      //       "Content-Type": "application/json"
-      //     },
-      //     body: JSON.stringify({
-      //       tempo_assistido: tempoAssistido,
-      //       duracao: duracaoVideo
-      //     })
-      //   }).then(response => response.json())
-      //     .then(data => {
-      //       if (data.redirect_url){
-      //         window.location.href = data.redirect_url;
-      //       }
-      //     });
-      // });
     </script>
   {% endif %}
 

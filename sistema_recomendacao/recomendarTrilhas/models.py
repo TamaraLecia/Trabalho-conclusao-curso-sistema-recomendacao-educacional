@@ -138,7 +138,15 @@ class ProgressoCapitulo(models.Model):
     def __str__(self):
         return f"{self.usuario} - {self.capitulo} - {'✔' if self.concluido else '✘'}"
     
+# capturar a sessão do tempo que o usuário ficou assistindo o vídeo
+class SessaoCapitulo(models.Model):
+    usuario = models.ForeignKey("usuarioComun.UsuarioComun", on_delete=models.CASCADE)
+    capitulo = models.ForeignKey("recomendarTrilhas.Capitulo", on_delete=models.CASCADE)
+    tempo_assistido = models.PositiveIntegerField(default=0)  # em segundos
+    registrado_em = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.usuario} - {self.capitulo.nome} ({self.tempo_assistido}s)"
 
     
     
