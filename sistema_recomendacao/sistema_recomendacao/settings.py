@@ -40,7 +40,7 @@ else:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # mudei o DEBUG para False para não mostrar minhas urls quando houvesse algum erro com o sistema em produção
-DEBUG =False
+DEBUG =True
 
 # utilização no deploy para aceitar requisições todos os domínios
 ALLOWED_HOSTS = ["*"]
