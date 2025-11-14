@@ -39,6 +39,7 @@ else:
     YOUTUBE_API_KEY = None
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# MUDANÇA MUDANÇA
 # mudei o DEBUG para False para não mostrar minhas urls quando houvesse algum erro com o sistema em produção
 DEBUG = False
 
